@@ -213,7 +213,7 @@ export default function HomeLess() {
                             <li>
                               {" "}
                               <span> Instituição: </span>{" "}
-                              {(user as any).institutionName || user.institution || "AjudeMe"}
+                              {(user as any).institution_name || (user as any).institutionName || user.institution || "Não informado"}
                             </li>
                             <li>
                               {" "}

@@ -156,7 +156,7 @@ app.post('/register/institution', async (req, res) => {
 
 app.post('/abrigados/register', async (req, res) => {
   try {
-    const { name, email, password, telephone, address, picture, age, cpf, institutionId } = req.body;
+    const { name, email, password, telephone, address, picture, description, age, cpf, institutionId } = req.body;
 
     // Verificar se o abrigado já existe
     const existingAbrigado = db.findHomelessByEmail(email);
@@ -187,6 +187,7 @@ app.post('/abrigados/register', async (req, res) => {
       age: age || '',
       cpf: cpf || '',
       picture: picture || '',
+      description: description || '',
       institutionId,
       institutionName: institution.name,
       hasLogin: true,

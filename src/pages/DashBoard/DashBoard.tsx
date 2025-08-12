@@ -123,9 +123,9 @@ export default function DashBoard() {
                 </div>
                 <div className="input-container">
                   <label htmlFor="">Descrição física</label>
-                  <input
-                    type="text"
+                  <textarea
                     placeholder="Descreva a aparência"
+                    rows={3}
                     {...register("description")}
                   />
                   <p className="error-message">{errors.description?.message}</p>

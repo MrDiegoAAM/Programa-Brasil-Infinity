@@ -49,6 +49,7 @@ export default function CardUsuario() {
       } else {
         setValue("age", user.age || "");
         setValue("cpf", user.cpf || "");
+        setValue("description", user.description || "");
       }
     }
   }, [user, isInstitution, setValue]);
@@ -226,6 +227,14 @@ export default function CardUsuario() {
                 placeholder="Não informado"
                 readOnly={!save && true}
                 {...register("picture")}
+              />
+              Descrição:{" "}
+              <textarea
+                value={watch("description") || ""}
+                placeholder="Não informado"
+                readOnly={!save && true}
+                rows={3}
+                {...register("description")}
               />
             </>
           )}{" "}

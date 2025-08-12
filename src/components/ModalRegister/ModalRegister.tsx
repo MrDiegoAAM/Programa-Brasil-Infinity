@@ -19,6 +19,7 @@ export interface IRegisterPerson {
   email: string;
   password: string;
   picture: string;
+  description: string;
   institutionId: string;
 }
 
@@ -65,6 +66,7 @@ export default function ModalRegister() {
     email: yup.string().email().required("Email obrigatório"),
     password: yup.string().required("Senha obrigatória"),
     picture: yup.string(),
+    description: yup.string(),
     institutionId: yup.string().when('$isAbrigado', {
       is: true,
       then: (schema) => schema.required("Instituição obrigatória"),
@@ -109,7 +111,7 @@ export default function ModalRegister() {
         });
     } else {
       api
-        .post("/abrigados/register", {
+        .post("/register/homeless", {
           name: data.name,
           age: data.age,
           cpf: data.cpf,
@@ -117,6 +119,7 @@ export default function ModalRegister() {
           telephone: data.phone,
           password: data.password,
           picture: data.picture || '',
+          description: data.description || '',
           institutionId: data.institutionId,
         })
         .then((res) => {
@@ -265,6 +268,20 @@ export default function ModalRegister() {
                 type="phone"
                 placeholder="Digite o seu telefone"
                 {...register("phone")}
+              />
+
+              <label>Foto (URL)</label>
+              <input
+                type="url"
+                placeholder="Digite o link da sua foto"
+                {...register("picture")}
+              />
+
+              <label>Descrição</label>
+              <textarea
+                placeholder="Digite uma breve descrição"
+                rows={3}
+                {...register("description")}
               />
 
               <label>Instituição</label>

@@ -159,13 +159,22 @@ app.post('/register/institution', async (req, res) => {
 // Rota para cadastro de abrigados
 app.post('/register/homeless', async (req, res) => {
   try {
-    const { name, email, password, telephone, address, age, cpf, rg, birthDate, picture, description } = req.body;
+    const { name, email, password, telephone, address, age, cpf, rg, birthDate, picture, description, institutionId } = req.body;
 
     // Verificar se email já existe
     if (email) {
       const existingHomeless = await db.findHomelessByEmail(email);
       if (existingHomeless) {
         return res.status(400).json({ message: 'Abrigado já cadastrado com este email' });
+      }
+    }
+
+    // Buscar informações da instituição se institutionId foi fornecido
+    let institutionName = null;
+    if (institutionId) {
+      const institution = await db.findInstitutionById(institutionId);
+      if (institution) {
+        institutionName = institution.name;
       }
     }
 
@@ -187,8 +196,8 @@ app.post('/register/homeless', async (req, res) => {
       rg,
       birth_date: birthDate,
       picture: picture || '',
-      institution_id: null,
-      institution_name: null,
+      institution_id: institutionId || null,
+      institution_name: institutionName,
       registered_by: 'self',
       has_login: !!password,
       description: description || '',
