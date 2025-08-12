@@ -19,7 +19,7 @@ interface IAbrigado {
   picture: string;
   description: string;
   institutionName: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export default function MeusAbrigados() {
@@ -59,7 +59,14 @@ export default function MeusAbrigados() {
   }, [isInstitution, token]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    if (!dateString) return 'Data não informada';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return 'Data inválida';
+    }
+    
+    return date.toLocaleDateString('pt-BR');
   };
 
   const handleEdit = (abrigado: IAbrigado) => {
@@ -178,7 +185,7 @@ export default function MeusAbrigados() {
                       <h3>{abrigado.name}</h3>
                     </div>
                     <span className="date">
-                      Cadastrado em: {formatDate(abrigado.createdAt)}
+                      Cadastrado em: {formatDate(abrigado.created_at)}
                     </span>
                   </div>
                   

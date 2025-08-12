@@ -13,7 +13,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'social-dev-secret-key';
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ charset: 'utf-8' }));
+app.use(express.urlencoded({ extended: true, charset: 'utf-8' }));
+
+// Configurar charset UTF-8 para todas as respostas
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
 
 // Inicializar database
 const db = new SupabaseDatabase();
