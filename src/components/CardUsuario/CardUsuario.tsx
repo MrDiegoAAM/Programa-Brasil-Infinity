@@ -6,6 +6,30 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { IRegisterPerson as IRegisterPersonComplete } from "../ModalRegister/ModalRegister";
 
+// Funções de máscara
+const formatCNPJ = (value: string) => {
+  const cleanValue = value.replace(/\D/g, '');
+  return cleanValue
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2')
+    .replace(/(-\d{2})\d+?$/, '$1');
+};
+
+const formatPhone = (value: string) => {
+  const cleanValue = value.replace(/\D/g, '');
+  if (cleanValue.length <= 10) {
+    return cleanValue
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d)/, '$1-$2');
+  } else {
+    return cleanValue
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{1})(\d{4})(\d)/, '$1 $2-$3');
+  }
+};
+
 export default function CardUsuario() {
   const { user } = useAuth();
   const { userProfile, updateInstitution, updateHomeless, institutions, loadInstitutions } = useData();
@@ -87,27 +111,46 @@ export default function CardUsuario() {
 
   return (
     <>
-      {/* Seção da foto do usuário */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        marginBottom: '20px',
-        padding: '20px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '10px'
+      {/* Header do Perfil com Foto e Informações Principais */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginBottom: '40px',
+        padding: '50px 40px',
+        background: 'linear-gradient(135deg, #2d9c8b 0%, #4ade80 50%, #22d3ee 100%)',
+        borderRadius: '24px',
+        boxShadow: '0 20px 60px rgba(45, 156, 139, 0.25)',
+        position: 'relative',
+        overflow: 'hidden',
+        color: 'white'
       }}>
+        {/* Padrão de fundo decorativo */}
         <div style={{
-          width: '120px',
-          height: '120px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Cdefs%3E%3Cpattern id=\'hearts\' width=\'40\' height=\'40\' patternUnits=\'userSpaceOnUse\'%3E%3Cpath d=\'M20,25 C15,15 5,15 5,25 C5,35 20,45 20,45 C20,45 35,35 35,25 C35,15 25,15 20,25 Z\' fill=\'%23ffffff\' opacity=\'0.08\'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\'100\' height=\'100\' fill=\'url(%23hearts)\'/%3E%3C/svg%3E")',
+          zIndex: 0
+        }}></div>
+        {/* Avatar do usuário */}
+        <div style={{
+          width: '160px',
+          height: '160px',
           borderRadius: '50%',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: userProfile?.picture ? 'transparent' : '#007bff',
-          border: '3px solid #ddd',
-          marginBottom: '10px'
+          background: userProfile?.picture ? 'transparent' : 'linear-gradient(135deg, #ff6b6b 0%, #feca57 100%)',
+          border: '5px solid rgba(255, 255, 255, 0.4)',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.25), inset 0 0 0 3px rgba(255, 255, 255, 0.15)',
+          marginBottom: '30px',
+          transition: 'all 0.3s ease',
+          position: 'relative',
+          zIndex: 1
         }}>
           {userProfile?.picture ? (
             <img
@@ -120,180 +163,341 @@ export default function CardUsuario() {
               }}
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.style.background = '#007bff';
-                e.currentTarget.parentElement!.innerHTML = `<span style="color: white; font-weight: 600; font-size: 2rem">${userProfile?.name?.charAt(0).toUpperCase() || 'U'}</span>`;
+                e.currentTarget.parentElement!.style.background = '#0057FF';
+                e.currentTarget.parentElement!.innerHTML = `<span style="color: white; font-weight: 600; font-size: 2.5rem">${userProfile?.name?.charAt(0).toUpperCase() || 'U'}</span>`;
               }}
             />
           ) : (
             <span style={{
               color: 'white',
-              fontWeight: '600',
-              fontSize: '2rem'
+              fontWeight: '700',
+              fontSize: '4rem',
+              textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
             }}>
               {userProfile?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           )}
         </div>
-        <h4 style={{ margin: '0', color: '#374c5a' }}>{userProfile?.name || 'Usuário'}</h4>
-        <p style={{ margin: '5px 0 0 0', color: '#6c757d', fontSize: '0.9rem' }}>
-          {isInstitution ? 'Instituição' : 'Abrigado'}
-        </p>
-      </div>
-
-      <CardUser>
-        <div>
-          <h3>Meus dados</h3>
+        {/* Informações do usuário */}
+        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <h2 style={{ 
+            margin: '0 0 8px 0', 
+            color: 'white', 
+            fontSize: '1.8rem', 
+            fontWeight: '700',
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+          }}>
+            {userProfile?.name || 'Usuário'}
+          </h2>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            background: 'rgba(255, 255, 255, 0.2)',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: isInstitution ? '#34d399' : '#22d3ee',
+              marginRight: '8px',
+              boxShadow: '0 0 10px currentColor'
+            }}></span>
+            <span style={{ 
+              color: 'rgba(255, 255, 255, 0.95)', 
+              fontSize: '0.9rem', 
+              fontWeight: '500',
+              letterSpacing: '0.3px'
+            }}>
+              {isInstitution ? '🏢 Organização de Apoio' : '🤝 Pessoa Assistida'}
+            </span>
+          </div>
         </div>
-        
-        <div>
-        <form onSubmit={handleSubmit(onSubmitForm)}>
-          {save ? (
-            <ButtonEditar onClick={() => setSave(true)} disabled>
-              Editar
-            </ButtonEditar>
-          ) : (
-            <ButtonEditar onClick={() => setSave(true)}>Editar</ButtonEditar>
-          )}
-          {isInstitution && (
-            <>
-              Nome Instituição:{" "}
-              <input
-                type="text"
-                value={watch("name") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("name")}
-              />
-              CNPJ:{" "}
-              <input
-                type="text"
-                value={watch("cnpj") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("cnpj")}
-              />
-              Endereço:{" "}
-              <input
-                type="text"
-                value={watch("address") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("address")}
-              />
-              Telefone:{" "}
-              <input
-                type="text"
-                value={watch("telephone") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("telephone")}
-              />
-              Email:{" "}
-              <input
-                type="text"
-                value={watch("email") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("email")}
-              />
-              Foto:{" "}
-              <input
-                type="url"
-                value={watch("picture") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("picture")}
-              />
-
-            </>
-          )}{" "}
-          {isAbrigado && (
-            <>
-              Nome Abrigado:{" "}
-              <input
-                type="text"
-                value={watch("name") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("name")}
-              />
-              Idade:{" "}
-              <input
-                type="text"
-                value={watch("age") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("age")}
-              />
-              CPF:{" "}
-              <input
-                type="text"
-                value={watch("cpf") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("cpf")}
-              />
-              Telefone:{" "}
-              <input
-                type="text"
-                value={watch("telephone") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("telephone")}
-              />
-              Email:{" "}
-              <input
-                type="text"
-                value={watch("email") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("email")}
-              />
-              Foto:{" "}
-              <input
-                type="url"
-                value={watch("picture") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                {...register("picture")}
-              />
-              Instituição:{" "}
-              <select
-                value={watch("institutionId") || ""}
-                disabled={!save}
-                {...register("institutionId")}
-              >
-                <option value="">Selecione uma instituição</option>
-                {institutions.map((institution) => (
-                  <option key={institution.id} value={institution.id}>
-                    {institution.name}
-                  </option>
-                ))}
-              </select>
-              Descrição:{" "}
-              <textarea
-                value={watch("description") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                rows={3}
-                {...register("description")}
-              />
-            </>
-          )}
-          {save && (
-            <div>
-              <ButtonSalvar type="submit" className="save">
-                Salvar
-              </ButtonSalvar>
-
-              <ButtonCancelar onClick={() => setSave(false)}>
-                Cancelar
-              </ButtonCancelar>
-            </div>
-          )}
-        </form>
       </div>
-    </CardUser>
+
+      {/* Cards de Informações Organizadas por Seções */}
+      <div style={{
+        display: 'grid',
+        gap: '30px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        {/* Card de Informações Pessoais */}
+        <CardUser>
+          <div className="card-header">
+            <div className="header-icon">👤</div>
+            <h3>Suas Informações Pessoais</h3>
+            <div className="header-subtitle">Mantenha seus dados sempre atualizados</div>
+          </div>
+          
+          <div className="card-content">
+          <div className="form-container">
+            <div className="edit-button-container">
+              {save ? (
+                <ButtonEditar onClick={() => setSave(true)} disabled className="btn-edit">
+                  Editar
+                </ButtonEditar>
+              ) : (
+                <ButtonEditar onClick={() => setSave(true)} className="btn-edit">Editar</ButtonEditar>
+              )}
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmitForm)}>
+              {isInstitution && (
+                <>
+                  <div className="form-grid">
+                    <div className="field">
+                      <label className="label" htmlFor="organization-name">Nome da Organização*</label>
+                      <input
+                        className="input"
+                        id="organization-name"
+                        type="text"
+                        autoComplete="organization"
+                        maxLength={120}
+                        value={watch("name") || ""}
+                        placeholder="Digite o nome da sua organização"
+                        readOnly={!save}
+                        {...register("name")}
+                      />
+                    </div>
+                    
+                    <div className="field">
+                      <label className="label" htmlFor="cnpj">CNPJ</label>
+                      <input
+                        className="input"
+                        id="cnpj"
+                        type="text"
+                        inputMode="numeric"
+                        value={formatCNPJ(watch("cnpj") || "")}
+                        placeholder="00.000.000/0000-00"
+                        readOnly={!save}
+                        onChange={(e) => {
+                          const formatted = formatCNPJ(e.target.value);
+                          setValue("cnpj", formatted);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="field full-width">
+                      <label className="label" htmlFor="document-id">Documento de identificação da organização</label>
+                      <input
+                        className="input"
+                        id="document-id"
+                        type="text"
+                        maxLength={40}
+                        value={watch("document") || ""}
+                        placeholder="Documento da organização"
+                        readOnly={!save}
+                        {...register("document")}
+                      />
+                    </div>
+                    
+                    <div className="field full-width">
+                      <label className="label" htmlFor="address">Endereço Completo</label>
+                      <input
+                        className="input"
+                        id="address"
+                        type="text"
+                        autoComplete="street-address"
+                        value={watch("address") || ""}
+                        placeholder="Rua, número, bairro, cidade - UF"
+                        readOnly={!save}
+                        {...register("address")}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {isAbrigado && (
+                <>
+                  <div className="form-grid">
+                    <div className="field">
+                      <label className="label" htmlFor="person-name">Seu Nome Completo*</label>
+                      <input
+                        className="input"
+                        id="person-name"
+                        type="text"
+                        autoComplete="name"
+                        value={watch("name") || ""}
+                        placeholder="Digite seu nome completo"
+                        readOnly={!save}
+                        {...register("name")}
+                      />
+                    </div>
+                    
+                    <div className="field">
+                      <label className="label" htmlFor="person-age">Sua Idade</label>
+                      <input
+                        className="input"
+                        id="person-age"
+                        type="number"
+                        inputMode="numeric"
+                        value={watch("age") || ""}
+                        placeholder="Ex: 25"
+                        readOnly={!save}
+                        {...register("age")}
+                      />
+                      <p className="help">Informação importante para o atendimento adequado</p>
+                    </div>
+                    
+                    <div className="field">
+                      <label className="label" htmlFor="person-cpf">CPF</label>
+                      <input
+                        className="input"
+                        id="person-cpf"
+                        type="text"
+                        inputMode="numeric"
+                        value={watch("cpf") || ""}
+                        placeholder="000.000.000-00"
+                        readOnly={!save}
+                        {...register("cpf")}
+                      />
+                      <p className="help">Documento para identificação (opcional)</p>
+                    </div>
+                    
+                    <div className="field">
+                      <label className="label" htmlFor="person-institution">Organização de Apoio</label>
+                      <select
+                        className="input"
+                        id="person-institution"
+                        value={watch("institutionId") || ""}
+                        disabled={!save}
+                        {...register("institutionId")}
+                      >
+                        <option value="">Selecione uma instituição</option>
+                        {institutions.map((institution) => (
+                          <option key={institution.id} value={institution.id}>
+                            {institution.name}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="help">Local onde você recebe atendimento</p>
+                    </div>
+                    
+                    <div className="field full-width">
+                      <label className="label" htmlFor="person-description">Conte um Pouco Sobre Você</label>
+                      <textarea
+                        className="input"
+                        id="person-description"
+                        value={watch("description") || ""}
+                        placeholder="Ex: Necessidades especiais, preferências, ou qualquer informação que considere importante..."
+                        readOnly={!save}
+                        rows={4}
+                        {...register("description")}
+                      />
+                      <p className="help">Compartilhe informações que possam ajudar no seu atendimento (opcional)</p>
+                    </div>
+                  </div>
+                </>
+              )}
+              
+              {save && (
+                <div className="button-group">
+                  <ButtonSalvar type="submit">
+                    Salvar Alterações
+                  </ButtonSalvar>
+                  <ButtonCancelar type="button" onClick={() => setSave(false)}>
+                    Cancelar
+                  </ButtonCancelar>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+        </CardUser>
+        
+        {/* Card de Contato */}
+        <CardUser>
+          <div className="card-header">
+            <div className="header-icon">📞</div>
+            <h3>Suas Informações de Contato</h3>
+            <div className="header-subtitle">Para que possamos nos comunicar com você</div>
+          </div>
+          
+          <div className="card-content">
+            <div className="form-container">
+              <div className="edit-button-container">
+                {save ? (
+                  <ButtonEditar onClick={() => setSave(true)} disabled className="btn-edit">
+                    Editar
+                  </ButtonEditar>
+                ) : (
+                  <ButtonEditar onClick={() => setSave(true)} className="btn-edit">Editar</ButtonEditar>
+                )}
+              </div>
+
+              <form onSubmit={handleSubmit(onSubmitForm)}>
+                <div className="form-grid">
+                  <div className="field">
+                    <label className="label" htmlFor="telephone">Telefone para Contato</label>
+                    <input
+                      className="input"
+                      id="telephone"
+                      type="tel"
+                      inputMode="tel"
+                      value={formatPhone(watch("telephone") || "")}
+                      placeholder="(11) 99999-9999"
+                      readOnly={!save}
+                      onChange={(e) => {
+                        const formatted = formatPhone(e.target.value);
+                        setValue("telephone", formatted);
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="field">
+                    <label className="label" htmlFor="emergency-contact">Número para emergências ou comunicações importantes</label>
+                    <input
+                      className="input"
+                      id="emergency-contact"
+                      type="tel"
+                      inputMode="tel"
+                      value={formatPhone(watch("emergencyContact") || "")}
+                      placeholder="(11) 99999-9999"
+                      readOnly={!save}
+                      onChange={(e) => {
+                        const formatted = formatPhone(e.target.value);
+                        setValue("emergencyContact", formatted);
+                      }}
+                    />
+                  </div>
+                  
+                  <div className="field">
+                    <label className="label" htmlFor="email">Email</label>
+                    <input
+                      className="input"
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      value={watch("email") || ""}
+                      placeholder="seu.email@exemplo.com"
+                      readOnly={!save}
+                      {...register("email")}
+                    />
+                    <p className="help">Para receber informações e atualizações (opcional)</p>
+                  </div>
+                </div>
+                
+                {save && (
+                  <div className="button-group">
+                    <ButtonSalvar type="submit">
+                      Salvar Alterações
+                    </ButtonSalvar>
+                    <ButtonCancelar type="button" onClick={() => setSave(false)}>
+                      Cancelar
+                    </ButtonCancelar>
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </CardUser>
+      </div>
     </>
   );
 }

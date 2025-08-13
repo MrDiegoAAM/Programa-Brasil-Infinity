@@ -22,6 +22,8 @@ export interface IRegisterPerson {
   picture: string;
   description: string;
   institutionId: string;
+  emergencyContact: string;
+  document: string;
 }
 
 interface IInstitution {

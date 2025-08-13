@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,8 +6,7 @@ import * as yup from 'yup';
 import { useAuth } from '../../contexts/authContext/SupabaseAuthContext';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
-import ModalRegister from '../../components/ModalRegister/ModalRegister';
-import { DivBack } from './styles';
+import { DivBack } from './SupabaseLogin.styles';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,7 +23,7 @@ const formSchema = yup.object().shape({
 export default function SupabaseLogin() {
   const { signIn, loading } = useAuth();
   const navigate = useNavigate();
-  const [isRegister, setIsRegister] = useState(false);
+
 
   const {
     register,
@@ -51,21 +50,21 @@ export default function SupabaseLogin() {
           <div className="content">
             <div className="content-left-side">
               <div className="content-left-side-text">
-                <h1>Bem-vindo de volta!</h1>
+                <h1>Bem-vindo!</h1>
                 <p>
-                  Faça login para acessar sua conta e continuar ajudando pessoas
-                  em situação de vulnerabilidade.
+                  Faça login para acessar o sistema de cadastro de pessoas em
+                  situação de vulnerabilidade social.
                 </p>
               </div>
             </div>
             <div className="content-right-side">
               <div className="content-right-side-text">
-                <h1>Entrar</h1>
-                <p>Digite suas credenciais para acessar sua conta</p>
+                <h1>Login</h1>
+                <p>Entre com suas credenciais</p>
               </div>
               <form onSubmit={handleSubmit(onSubmitFunction)}>
                 <div className="input-container">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">Email:</label>
                   <input
                     type="email"
                     id="email"
@@ -77,7 +76,7 @@ export default function SupabaseLogin() {
                   )}
                 </div>
                 <div className="input-container">
-                  <label htmlFor="password">Senha</label>
+                  <label htmlFor="password">Senha:</label>
                   <input
                     type="password"
                     id="password"
@@ -95,7 +94,7 @@ export default function SupabaseLogin() {
               <div className="register-link">
                 <p>
                   Não tem uma conta?{' '}
-                  <span onClick={() => setIsRegister(true)}>Cadastre-se</span>
+                  <span onClick={() => navigate('/register')}>Cadastre-se</span>
                 </p>
               </div>
             </div>
@@ -103,12 +102,7 @@ export default function SupabaseLogin() {
         </div>
       </DivBack>
       <Footer />
-      {isRegister && (
-        <ModalRegister
-          isRegister={isRegister}
-          setIsRegister={setIsRegister}
-        />
-      )}
+
       <ToastContainer
         position="top-right"
         autoClose={3000}
