@@ -10,7 +10,8 @@ export const Container = styled.div`
     rgb(19, 153, 70) 100%
   );
 
-  overflow: auto;
+  min-height: calc(100vh - 70px);
+  overflow: visible;
 
   display: flex;
   flex-direction: column;

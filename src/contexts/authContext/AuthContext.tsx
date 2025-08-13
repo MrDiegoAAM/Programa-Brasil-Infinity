@@ -144,6 +144,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
           setIsAbrigado(true);
           setIsInstitution(false);
           setUser(res.data);
+          toast.success("Perfil carregado com sucesso");
         }).catch((error) => {
           console.error("❌ Erro ao buscar perfil do abrigado:", error);
           console.error("❌ Detalhes do erro:", {
@@ -152,14 +153,38 @@ export default function AuthProvider({ children }: IChildrenProps) {
             status: error.response?.status,
             config: error.config
           });
-          // Se houver erro de autenticação, limpar dados
-          if (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 404) {
-            console.log("🧹 Token inválido ou usuário não encontrado, limpando dados...");
-            clearAuthData();
-            toast.error("Sessão expirada. Faça login novamente.");
+          
+          // Fallback para dados mock quando Edge Functions não funcionam
+          if (storedToken.includes("mock-signature")) {
+            console.log("🔄 Usando dados mock para perfil do abrigado");
+            const mockProfile = {
+              id: 'test-123',
+              name: 'Diego Teste',
+              email: 'diegoaam@hotmail.com',
+              age: 30,
+              cpf: '123.456.789-00',
+              rg: '12.345.678-9',
+              birth_date: '1993-01-01',
+              address: 'Endereço de Teste',
+              telephone: '(11) 99999-9999',
+              picture: "",
+              description: 'Usuário de teste'
+            };
+            setIsAbrigado(true);
+            setIsInstitution(false);
+            setUser(mockProfile);
+            console.log("✅ Perfil mock carregado:", mockProfile);
+            toast.success("Perfil carregado com sucesso (modo teste)");
           } else {
-            console.log("⚠️ Erro não relacionado à autenticação, mantendo dados...");
-            toast.error("Erro ao carregar perfil. Tente novamente.");
+            // Se houver erro de autenticação, limpar dados
+            if (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 404) {
+              console.log("🧹 Token inválido ou usuário não encontrado, limpando dados...");
+              clearAuthData();
+              toast.error("Sessão expirada. Faça login novamente.");
+            } else {
+              console.log("⚠️ Erro não relacionado à autenticação, mantendo dados...");
+              toast.error("Erro ao carregar perfil. Tente novamente.");
+            }
           }
         });
       } else if (type === "institution") {
@@ -170,15 +195,50 @@ export default function AuthProvider({ children }: IChildrenProps) {
           setIsInstitution(true);
           setIsAbrigado(false);
           setUser(res.data);
+          toast.success("Perfil da instituição carregado com sucesso");
           
           // Carregar abrigados da instituição após definir o tipo
           console.log("🔄 Carregando abrigados da instituição...");
-          api.get("/homeless/by-institution").then((homelessRes) => {
+          api.get("/homeless-by-institution").then((homelessRes) => {
             console.log("✅ Abrigados da instituição carregados:", homelessRes.data);
             setHomeLess(homelessRes.data);
           }).catch((homelessError) => {
             console.error("❌ Erro ao carregar abrigados da instituição:", homelessError);
-            toast.error("Erro ao carregar abrigados");
+            
+            // Fallback para dados mock quando Edge Functions não funcionam
+            if (storedToken.includes("mock-signature")) {
+              console.log("🔄 Usando dados mock para lista de abrigados");
+              const mockHomeless = [
+                {
+                  id: 1,
+                  name: "João Silva",
+                  age: 35,
+                  cpf: "111.222.333-44",
+                  state: "SP",
+                  lastLocation: "Centro",
+                  contact: "11999999999",
+                  img: null,
+                  institution: "Instituição Teste",
+                  picture: ""
+                },
+                {
+                  id: 2,
+                  name: "Maria Santos",
+                  age: 28,
+                  cpf: "555.666.777-88",
+                  state: "SP",
+                  lastLocation: "Vila Madalena",
+                  contact: "11888888888",
+                  img: null,
+                  institution: "Instituição Teste",
+                  picture: ""
+                }
+              ];
+              setHomeLess(mockHomeless);
+              console.log("✅ Abrigados mock carregados:", mockHomeless);
+            } else {
+              toast.error("Erro ao carregar abrigados");
+            }
           });
         }).catch((error) => {
           console.error("❌ Erro ao buscar perfil da instituição:", error);
@@ -188,14 +248,65 @@ export default function AuthProvider({ children }: IChildrenProps) {
             status: error.response?.status,
             config: error.config
           });
-          // Se houver erro de autenticação, limpar dados
-          if (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 404) {
-            console.log("🧹 Token inválido ou instituição não encontrada, limpando dados...");
-            clearAuthData();
-            toast.error("Sessão expirada. Faça login novamente.");
+          
+          // Fallback para dados mock quando Edge Functions não funcionam
+          if (storedToken.includes("mock-signature")) {
+            console.log("🔄 Usando dados mock para perfil da instituição");
+            const mockProfile = {
+              id: 'inst-123',
+              name: 'Instituição Teste',
+              email: 'instituicao@teste.com',
+              cnpj: '12.345.678/0001-90',
+              address: 'Endereço da Instituição',
+              telephone: '(11) 88888-8888',
+              picture: "",
+              description: 'Instituição de teste'
+            };
+            setIsInstitution(true);
+            setIsAbrigado(false);
+            setUser(mockProfile);
+            console.log("✅ Perfil mock da instituição carregado:", mockProfile);
+            toast.success("Perfil da instituição carregado com sucesso (modo teste)");
+            
+            // Carregar dados mock de abrigados
+            const mockHomeless = [
+               {
+                 id: 1,
+                 name: "João Silva",
+                 age: 35,
+                 cpf: "111.222.333-44",
+                 state: "SP",
+                 lastLocation: "Centro",
+                 contact: "11999999999",
+                 img: null,
+                 institution: "Instituição Teste",
+                 picture: ""
+               },
+               {
+                 id: 2,
+                 name: "Maria Santos",
+                 age: 28,
+                 cpf: "555.666.777-88",
+                 state: "SP",
+                 lastLocation: "Vila Madalena",
+                 contact: "11888888888",
+                 img: null,
+                 institution: "Instituição Teste",
+                 picture: ""
+               }
+             ];
+            setHomeLess(mockHomeless);
+            console.log("✅ Abrigados mock carregados:", mockHomeless);
           } else {
-            console.log("⚠️ Erro não relacionado à autenticação, mantendo dados...");
-            toast.error("Erro ao carregar perfil. Tente novamente.");
+            // Se houver erro de autenticação, limpar dados
+            if (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 404) {
+              console.log("🧹 Token inválido ou instituição não encontrada, limpando dados...");
+              clearAuthData();
+              toast.error("Sessão expirada. Faça login novamente.");
+            } else {
+              console.log("⚠️ Erro não relacionado à autenticação, mantendo dados...");
+              toast.error("Erro ao carregar perfil. Tente novamente.");
+            }
           }
         });
       }
@@ -266,7 +377,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
   }
 
   function search() {
-    const endpoint = isInstitution ? "/homeless/by-institution" : "/homeless";
+    const endpoint = isInstitution ? "/homeless-by-institution" : "/homeless";
     api.get(endpoint).then((res) => {
       console.log(res);
       setHomeLess([
@@ -281,7 +392,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
   useEffect(() => {
     // Só buscar dados se estiver logado
     if (isLogin && token) {
-      const endpoint = isInstitution ? "/homeless/by-institution" : "/homeless";
+      const endpoint = isInstitution ? "/homeless-by-institution" : "/homeless";
       api
         .get(endpoint)
         .then((res) => {

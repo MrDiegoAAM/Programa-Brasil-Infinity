@@ -13,6 +13,8 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useContext } from "react";
 import Menu from "../Menu/Index";
 import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
+import { useData } from "../../contexts/authContext/DataContext";
 import { Link } from "react-router-dom";
 import { BiLogIn, BiLogOut } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
@@ -21,7 +23,16 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Header() {
-  const { isLogin, isModal, setIsModal, logout, user, isInstitution } = useContext(AuthContext);
+  const { isModal, setIsModal } = useContext(AuthContext);
+  const { user, signOut } = useAuth();
+  const { userProfile } = useData();
+  
+  const isLogin = !!user;
+  const isInstitution = userProfile && 'cnpj' in userProfile;
+  
+  const handleLogout = async () => {
+    await signOut();
+  };
   return (
     <HeaderDiv>
       <DivLogo>
@@ -45,25 +56,25 @@ export default function Header() {
         <DivNav>
           {isLogin ? (
             <>
-              {user && (
+              {userProfile && (
                 <InstitutionInfo>
                   <InstitutionAvatar>
-                    {user.picture ? (
-                      <img src={user.picture} alt={user.name} />
+                    {userProfile.picture ? (
+                      <img src={userProfile.picture} alt={userProfile.name} />
                     ) : (
                       <div className="placeholder">
-                        {user.name?.charAt(0).toUpperCase()}
+                        {userProfile.name?.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </InstitutionAvatar>
-                  <InstitutionName>{user.name}</InstitutionName>
+                  <InstitutionName>{userProfile?.name || 'Usuário'}</InstitutionName>
                 </InstitutionInfo>
               )}
               <Link to="/profile">
                 <CgProfile />
                 Perfil
               </Link>
-              <Link to="/home" onClick={logout}>
+              <Link to="/home" onClick={handleLogout}>
                 <BiLogOut />
                 Logout
               </Link>

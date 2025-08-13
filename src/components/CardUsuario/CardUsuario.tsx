@@ -1,121 +1,92 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
+import { useData } from "../../contexts/authContext/DataContext";
 import { CardUser, ButtonSalvar, ButtonEditar, ButtonCancelar } from "./style";
 import { useForm } from "react-hook-form";
-import api from "../../server/api";
 import { toast } from "react-toastify";
 import { IRegisterPerson as IRegisterPersonComplete } from "../ModalRegister/ModalRegister";
 
 export default function CardUsuario() {
-  const {
-    user,
-    setIsLogin,
-    isInstitution,
-    isAbrigado,
-    setIsInstitution,
-    setIsAbrigado,
-  } = useContext(AuthContext);
+  const { user } = useAuth();
+  const { userProfile, updateInstitution, updateHomeless, institutions, loadInstitutions } = useData();
   const [save, setSave] = useState(false);
-  console.log(user);
+  
+  const isInstitution = userProfile && 'cnpj' in userProfile;
+  const isAbrigado = userProfile && 'cpf' in userProfile;
+  
+  console.log('CardUsuario - user:', user);
+  console.log('CardUsuario - userProfile:', userProfile);
 
   const { register, handleSubmit, setValue, watch } = useForm<IRegisterPersonComplete>();
 
+  // Carregar instituições quando o componente for montado
   useEffect(() => {
-    const type = localStorage.getItem("@type");
-
-    if (type !== undefined) {
-      if (type === "institution") {
-        setIsAbrigado(false);
-        setIsInstitution(true);
-      } else {
-        setIsInstitution(false);
-        setIsAbrigado(true);
-      }
+    if (isAbrigado) {
+      loadInstitutions();
     }
-  }, []);
+  }, [isAbrigado, loadInstitutions]);
 
   // Atualizar os valores do formulário quando os dados do usuário chegarem
   useEffect(() => {
-    if (user && Object.keys(user).length > 0) {
-      console.log("🔄 Atualizando valores do formulário com dados do usuário:", user);
-      setValue("name", user.name || "");
-      setValue("email", user.email || "");
-      setValue("picture", user.picture || "");
-      setValue("telephone", user.telephone || "");
+    if (userProfile && Object.keys(userProfile).length > 0) {
+      console.log("🔄 Atualizando valores do formulário com dados do usuário:", userProfile);
+      setValue("name", userProfile.name || "");
+      setValue("email", userProfile.email || "");
+      setValue("picture", userProfile.picture || "");
+      setValue("telephone", userProfile.telephone || "");
       
       if (isInstitution) {
-        setValue("cnpj", user.cnpj || "");
-        setValue("address", user.address || "");
+        setValue("cnpj", userProfile.cnpj || "");
+        setValue("address", userProfile.address || "");
       } else {
-        setValue("age", user.age || "");
-        setValue("cpf", user.cpf || "");
-        setValue("description", user.description || "");
+        setValue("age", userProfile.age || "");
+        setValue("cpf", userProfile.cpf || "");
+        setValue("description", userProfile.description || "");
+        setValue("institutionId", userProfile.institution_id || "");
       }
     }
-  }, [user, isInstitution, setValue]);
+  }, [userProfile, isInstitution, setValue]);
 
-  const onSubmitForm = (data: IRegisterPersonComplete) => {
+  const onSubmitForm = async (data: IRegisterPersonComplete) => {
     console.log('🔄 FRONTEND - Iniciando envio do formulário');
     console.log('📝 Dados do formulário:', data);
     console.log('🖼️ Campo picture no formulário:', data.picture);
     
-    const type = localStorage.getItem("@type");
-    console.log('👤 Tipo de usuário:', type);
+    if (!userProfile) {
+      toast.error("Perfil do usuário não encontrado");
+      return;
+    }
 
-    if (type === "institution") {
-      setIsAbrigado(false);
-      setIsInstitution(true);
-
-      console.log('📤 Enviando dados para /register/institution/profile');
-      api.patch("/register/institution/profile", data).then((res) => {
-        console.log('📥 Resposta recebida:', res);
-        if (res.status === 200) {
-          toast.success("Usuário atualizado com sucesso!", {
-            autoClose: 1500,
-          });
-          setTimeout(() => {
-            setIsLogin(true);
-            setSave(false);
-          }, 2000);
-        } else {
-          toast.error("Ops, algo deu errado", { autoClose: 1500 });
-        }
-      }).catch((error) => {
-        console.error('❌ Erro na requisição:', error);
-        toast.error("Erro ao atualizar perfil", { autoClose: 1500 });
-      });
-    } else {
-      setIsInstitution(false);
-      setIsAbrigado(true);
-      
-      console.log('📤 Enviando dados para /abrigados/profile');
-      api.patch("/abrigados/profile", data).then((res) => {
-        console.log('📥 Resposta recebida:', res);
-        console.log('📝 Dados enviados:', data);
-        if (res.status === 200) {
-          toast.success("Usuário atualizado com sucesso!", {
-            autoClose: 1500,
-          });
-          setTimeout(() => {
-            setIsLogin(true);
-            setSave(false);
-          }, 2000);
-        } else {
-          toast.error("Ops, algo deu errado", { autoClose: 1500 });
-        }
-      }).catch((error) => {
-        console.error('❌ Erro na requisição:', error);
-        toast.error("Erro ao atualizar perfil", { autoClose: 1500 });
-      });
+    try {
+      if (isInstitution) {
+        console.log('📤 Atualizando dados da instituição via Supabase');
+        await updateInstitution(userProfile.id, data);
+        
+        toast.success("Instituição atualizada com sucesso!", {
+          autoClose: 1500,
+        });
+        setTimeout(() => {
+          setSave(false);
+        }, 2000);
+      } else {
+        console.log('📤 Atualizando dados do abrigado via Supabase');
+        await updateHomeless(userProfile.id, data);
+        
+        toast.success("Dados atualizados com sucesso!", {
+          autoClose: 1500,
+        });
+        setTimeout(() => {
+          setSave(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao atualizar perfil:', error);
+      toast.error("Erro ao atualizar perfil", { autoClose: 1500 });
     }
   };
 
   return (
-    <CardUser>
-      <div>
-        <h3>Meus dados</h3>
-      </div>
-      
+    <>
       {/* Seção da foto do usuário */}
       <div style={{ 
         display: 'flex', 
@@ -134,14 +105,14 @@ export default function CardUsuario() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: user.picture ? 'transparent' : '#007bff',
+          background: userProfile?.picture ? 'transparent' : '#007bff',
           border: '3px solid #ddd',
           marginBottom: '10px'
         }}>
-          {user.picture ? (
-            <img 
-              src={user.picture} 
-              alt={`Foto de ${user.name}`}
+          {userProfile?.picture ? (
+            <img
+              src={userProfile.picture} 
+              alt={`Foto de ${userProfile?.name || 'usuário'}`}
               style={{
                 width: '100%',
                 height: '100%',
@@ -150,7 +121,7 @@ export default function CardUsuario() {
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 e.currentTarget.parentElement!.style.background = '#007bff';
-                e.currentTarget.parentElement!.innerHTML = `<span style="color: white; font-weight: 600; font-size: 2rem">${user.name?.charAt(0).toUpperCase()}</span>`;
+                e.currentTarget.parentElement!.innerHTML = `<span style="color: white; font-weight: 600; font-size: 2rem">${userProfile?.name?.charAt(0).toUpperCase() || 'U'}</span>`;
               }}
             />
           ) : (
@@ -159,17 +130,22 @@ export default function CardUsuario() {
               fontWeight: '600',
               fontSize: '2rem'
             }}>
-              {user.name?.charAt(0).toUpperCase()}
+              {userProfile?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           )}
         </div>
-        <h4 style={{ margin: '0', color: '#374c5a' }}>{user.name}</h4>
+        <h4 style={{ margin: '0', color: '#374c5a' }}>{userProfile?.name || 'Usuário'}</h4>
         <p style={{ margin: '5px 0 0 0', color: '#6c757d', fontSize: '0.9rem' }}>
           {isInstitution ? 'Instituição' : 'Abrigado'}
         </p>
       </div>
 
-      <div>
+      <CardUser>
+        <div>
+          <h3>Meus dados</h3>
+        </div>
+        
+        <div>
         <form onSubmit={handleSubmit(onSubmitForm)}>
           {save ? (
             <ButtonEditar onClick={() => setSave(true)} disabled>
@@ -228,14 +204,7 @@ export default function CardUsuario() {
                 readOnly={!save && true}
                 {...register("picture")}
               />
-              Descrição:{" "}
-              <textarea
-                value={watch("description") || ""}
-                placeholder="Não informado"
-                readOnly={!save && true}
-                rows={3}
-                {...register("description")}
-              />
+
             </>
           )}{" "}
           {isAbrigado && (
@@ -288,6 +257,27 @@ export default function CardUsuario() {
                 readOnly={!save && true}
                 {...register("picture")}
               />
+              Instituição:{" "}
+              <select
+                value={watch("institutionId") || ""}
+                disabled={!save}
+                {...register("institutionId")}
+              >
+                <option value="">Selecione uma instituição</option>
+                {institutions.map((institution) => (
+                  <option key={institution.id} value={institution.id}>
+                    {institution.name}
+                  </option>
+                ))}
+              </select>
+              Descrição:{" "}
+              <textarea
+                value={watch("description") || ""}
+                placeholder="Não informado"
+                readOnly={!save && true}
+                rows={3}
+                {...register("description")}
+              />
             </>
           )}
           {save && (
@@ -304,5 +294,6 @@ export default function CardUsuario() {
         </form>
       </div>
     </CardUser>
+    </>
   );
 }

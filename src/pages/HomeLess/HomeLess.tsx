@@ -1,7 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { GrNext, GrPrevious } from "react-icons/gr";
-import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
+import { useData } from "../../contexts/authContext/DataContext";
 
 import { ContainerHome } from "../Home/styles";
 import {
@@ -16,41 +17,55 @@ import {
 } from "./styles";
 import Header from "../../components/Header/Header";
 
-import imgSearch from "../../img/search.png";
-import imgComeBack from "../../img/ComeBack.png";
-import imgProceed from "../../img/Proceed.png";
 import imgTeste from "../../img/people01.jpg";
-import api from "../../server/api";
 import Footer from "../../components/Footer/Footer";
 import ResetPage from "../../components/AboutTeam/ResetPage";
 import AnimatedPage from "../../components/AnimatedPage";
 import { Link } from "react-router-dom";
 
 export default function HomeLess() {
-  const {
-    homeLess,
-    isNextDisabled,
-    isGoBackDisabled,
-    search,
-    setSearchFor,
-    next,
-    goBack,
-    setHomeLess,
-    token,
-    isAbrigado,
-    isInstitution,
-    user,
-  } = useContext(AuthContext);
-
+  const { user } = useAuth();
+  const { homeless, userProfile, loading } = useData();
+  const [searchFor, setSearchFor] = useState("");
+  const [filteredHomeless, setFilteredHomeless] = useState(homeless);
+  
+  // Determinar tipo de usuário baseado no userProfile
+  const isInstitution = userProfile && 'cnpj' in userProfile;
+  const isAbrigado = userProfile && 'cpf' in userProfile;
+  
   console.log("=== COMPONENTE ABRIGADOS CARREGADO ===");
-  console.log("Token atual:", token);
-  console.log("Abrigados data:", homeLess);
+  console.log("User:", user);
+  console.log("UserProfile:", userProfile);
+  console.log("Homeless data:", homeless);
+
+  // Atualizar lista filtrada quando os dados mudarem
   useEffect(() => {
-    api.get("/homeless").then((res) => {
-      console.log(res);
-      setHomeLess([...res.data]);
-    });
-  }, []);
+    setFilteredHomeless(homeless);
+  }, [homeless]);
+  
+  // Função de busca
+  const search = () => {
+    if (!searchFor.trim()) {
+      setFilteredHomeless(homeless);
+      return;
+    }
+    
+    const filtered = homeless.filter((person: any) => 
+      person.name?.toLowerCase().includes(searchFor.toLowerCase()) ||
+      person.cpf?.includes(searchFor) ||
+      person.rg?.includes(searchFor)
+    );
+    setFilteredHomeless(filtered);
+  };
+  
+  // Funções de paginação (simplificadas por enquanto)
+  const next = () => {
+    // TODO: Implementar paginação
+  };
+  
+  const goBack = () => {
+    // TODO: Implementar paginação
+  };
 
 
 
@@ -96,7 +111,7 @@ export default function HomeLess() {
         <Main>
           <BodyHomeLess>
             {/* Cabeçalho com informações da instituição */}
-            {isInstitution && user && (
+            {isInstitution && userProfile && (
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -117,9 +132,9 @@ export default function HomeLess() {
                   justifyContent: 'center',
                   background: '#007bff'
                 }}>
-                  {user.picture ? (
+                  {userProfile.picture ? (
                     <img 
-                      src={user.picture} 
+                      src={userProfile.picture} 
                       alt="Foto da instituição"
                       style={{
                         width: '100%',
@@ -133,7 +148,7 @@ export default function HomeLess() {
                       fontWeight: '600',
                       fontSize: '1.2rem'
                     }}>
-                      {user.name?.charAt(0).toUpperCase()}
+                      {userProfile.name?.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
@@ -144,7 +159,7 @@ export default function HomeLess() {
                     fontSize: '1.2rem',
                     fontWeight: '600'
                   }}>
-                    {user.name}
+                    {userProfile.name}
                   </h3>
                   <p style={{
                     margin: '0',
@@ -182,13 +197,17 @@ export default function HomeLess() {
               </DirectionsTop>
             </HeaderSearchHomeLess>
             <BodyMissing>
-              {homeLess.length === 0 ? (
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                  <p>Carregando...</p>
+                </div>
+              ) : filteredHomeless.length === 0 ? (
                 <div>
                   <p>Ops...</p>
                   <p>Nenhum resultado encontrado!</p>
                 </div>
               ) : (
-                homeLess.map((user) => (
+                filteredHomeless.map((user: any) => (
                   <CardHomeLess key={user.id}>
                     <Link to="#">
                       <figure>
@@ -230,12 +249,12 @@ export default function HomeLess() {
             </BodyMissing>
 
             <DirectionsBottom>
-              <button disabled={isGoBackDisabled} onClick={() => goBack()}>
+              <button disabled onClick={() => goBack()}>
                 {/* <img src={imgComeBack} alt="Voltar lista de usuarios" /> */}
                 <GrPrevious />
               </button>
 
-              <button disabled={isNextDisabled} onClick={() => next()}>
+              <button disabled onClick={() => next()}>
                 {/* <img src={imgProceed} alt="Adiantar lista de usuarios" /> */}
                 <GrNext />
               </button>

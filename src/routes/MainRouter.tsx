@@ -4,7 +4,7 @@ import CampanhaGOV from "../pages/CampanhaGOV/CampanhaGOV";
 import DashBoard from "../pages/DashBoard/DashBoard";
 import Home from "../pages/Home/Home";
 import HomeLess from "../pages/HomeLess/HomeLess";
-import Login from "../pages/Login";
+import SupabaseLogin from "../pages/Login/SupabaseLogin";
 import Profile from "../pages/Profile/Profile";
 import MeusAbrigados from "../pages/MeusAbrigados/MeusAbrigados";
 import { AnimatePresence } from "framer-motion";
@@ -19,7 +19,7 @@ export default function RouteMain() {
         <Route path="/home" element={<Home />} />
         <Route path="/sobrenos" element={<AboutUs />} />
         <Route path="/programadoacolhimentogov" element={<CampanhaGOV />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<SupabaseLogin />} />
         <Route element={<InstitutionRoutes/>}>
           <Route path="/pesquisapessoas" element={<HomeLess />} />
           <Route path="/meusabrigados" element={<MeusAbrigados />} />

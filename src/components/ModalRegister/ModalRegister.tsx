@@ -2,9 +2,10 @@ import { DivBack } from "./styles";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../contexts/authContext/AuthContext";
-import api from "../../server/api";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
+import { useData } from "../../contexts/authContext/DataContext";
+import { supabase } from "../../services/supabase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -28,32 +29,17 @@ interface IInstitution {
   name: string;
 }
 
-export default function ModalRegister() {
-  const {
-    setIsRegister,
-    isInstitution,
-    setIsInstitution,
-    isAbrigado,
-    setIsAbrigado,
-  } = useContext(AuthContext);
+interface ModalRegisterProps {
+  isRegister: boolean;
+  setIsRegister: (value: boolean) => void;
+}
 
-  const [institutions, setInstitutions] = useState<IInstitution[]>([]);
+export default function ModalRegister({ isRegister, setIsRegister }: ModalRegisterProps) {
+  const { signUp } = useAuth();
+  const { institutions } = useData();
+  const [isInstitution, setIsInstitution] = useState(false);
+  const [isAbrigado, setIsAbrigado] = useState(false);
   const customId = "custom-id-yes";
-
-  // Carregar instituições quando o componente for montado
-  useEffect(() => {
-    const loadInstitutions = async () => {
-      try {
-        const response = await api.get('/institutions');
-        setInstitutions(response.data);
-      } catch (error) {
-        console.error('Erro ao carregar instituições:', error);
-        toast.error('Erro ao carregar lista de instituições');
-      }
-    };
-
-    loadInstitutions();
-  }, []);
 
   const formSchema = yup.object().shape({
     name: yup.string(),
@@ -83,61 +69,64 @@ export default function ModalRegister() {
     context: { isAbrigado }
   });
 
-  const onSubmitFunction = (data: IRegisterPerson) => {
+  const onSubmitFunction = async (data: IRegisterPerson) => {
     console.log(data);
-    if (isInstitution) {
-      api.post("/register/institution", {
-          name: data.name,
-          cnpj: data.cnpj,
-          address: data.address,
-          telephone: data.phone,
-          email: data.email,
-          password: data.password,
-          picture: data.picture || '',
-        })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success("Registro realizado com sucesso", {
-              autoClose: 1500,
-              toastId: customId,
-            });
-            setTimeout(() => setIsRegister(false), 2500);
-          }
-        })
-        .catch((error: any) => {
-          console.error("Erro no cadastro de instituição:", error);
-          const errorMessage = error.response?.data?.message || error.response?.data || "Erro no cadastro";
-          toast.error(`Erro: ${errorMessage}`);
-        });
-    } else {
-      api
-        .post("/register/homeless", {
-          name: data.name,
-          age: data.age,
-          cpf: data.cpf,
-          email: data.email,
-          telephone: data.phone,
-          password: data.password,
-          picture: data.picture || '',
-          description: data.description || '',
-          institutionId: data.institutionId,
-        })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success("Registro realizado com sucesso", {
-              autoClose: 1500,
-              toastId: customId,
-            });
-            setTimeout(() => setIsRegister(false), 2500);
-          }
-        })
-        .catch((error: any) => {
-          console.error("Erro no cadastro de abrigado:", error);
-          const errorMessage = error.response?.data?.message || error.response?.data || "Erro no cadastro";
-          toast.error(`Erro: ${errorMessage}`);
-        });
-    }
-  };
+    try {
+      // Primeiro, criar o usuário no Supabase Auth
+      await signUp(data.email, data.password);
+
+      if (isInstitution) {
+        // Inserir dados da instituição na tabela institutions
+        const { error: dbError } = await supabase
+          .from('institutions')
+          .insert({
+            name: data.name,
+            cnpj: data.cnpj,
+            address: data.address,
+            telephone: data.phone,
+            email: data.email,
+            password: data.password, // Note: Em produção, não armazene senhas em texto plano
+            picture: data.picture || '',
+          });
+
+        if (dbError) {
+          console.error("Erro no cadastro de instituição:", dbError);
+          toast.error(`Erro: ${dbError.message}`);
+          return;
+        }
+      } else {
+        // Inserir dados do abrigado na tabela homeless
+        const { error: dbError } = await supabase
+          .from('homeless')
+          .insert({
+            name: data.name,
+            age: parseInt(data.age),
+            cpf: data.cpf,
+            email: data.email,
+            telephone: data.phone,
+            password: data.password, // Note: Em produção, não armazene senhas em texto plano
+            picture: data.picture || '',
+            description: data.description || '',
+            institution_id: data.institutionId,
+          });
+
+        if (dbError) {
+          console.error("Erro no cadastro de abrigado:", dbError);
+          toast.error(`Erro: ${dbError.message}`);
+          return;
+        }
+      }
+
+      toast.success("Registro realizado com sucesso", {
+        autoClose: 1500,
+        toastId: customId,
+      });
+      setTimeout(() => setIsRegister(false), 2500);
+    } catch (error: any) {
+       console.error("Erro no cadastro:", error);
+       toast.error(`Erro: ${error.message || 'Erro desconhecido'}`);
+     }
+   };
 
   return (
     <DivBack>

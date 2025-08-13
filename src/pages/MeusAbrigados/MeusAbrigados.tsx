@@ -1,62 +1,61 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useEffect, useState } from "react";
+import { useData } from "../../contexts/authContext/DataContext";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import AnimatedPage from "../../components/AnimatedPage";
 import ResetPage from "../../components/AboutTeam/ResetPage";
-import api from "../../server/api";
 import { toast } from "react-toastify";
 import { Container, AbrigadoCard, AbrigadosList, Title, EmptyState, ActionButtons, EditButton, DeleteButton, EditForm, FormGroup, SaveButton, CancelButton } from "./styles";
 
 interface IAbrigado {
   id: string;
   name: string;
-  email: string;
-  age: string;
-  cpf: string;
-  telephone: string;
-  address: string;
-  picture: string;
-  description: string;
-  institutionName: string;
+  email?: string;
+  age?: string;
+  cpf?: string;
+  telephone?: string;
+  address?: string;
+  picture?: string;
+  description?: string;
+  institution_name?: string;
+  institutionName?: string;
   created_at: string;
+  institution_id?: string;
+  birth_date?: string;
+  rg?: string;
+  registered_by?: string;
+  has_login?: boolean;
+  updated_at?: string;
 }
 
 export default function MeusAbrigados() {
-  const { isInstitution, token, user } = useContext(AuthContext);
+  const { userProfile, homeless, loading: dataLoading, updateHomeless } = useData();
   const [abrigados, setAbrigados] = useState<IAbrigado[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<IAbrigado>>({});
 
+  // Determinar se é instituição
+  const isInstitution = userProfile && 'cnpj' in userProfile;
+
+  console.log('MeusAbrigados - userProfile:', userProfile);
+  console.log('MeusAbrigados - isInstitution:', isInstitution);
+  console.log('MeusAbrigados - homeless data:', homeless);
+
   useEffect(() => {
-    const loadAbrigados = async () => {
-      try {
-        if (!token) {
-          toast.error("Token de autenticação não encontrado");
-          return;
-        }
-
-        const response = await api.get('/homeless/by-institution', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        setAbrigados(response.data);
-      } catch (error: any) {
-        console.error('Erro ao carregar abrigados:', error);
-        const errorMessage = error.response?.data?.message || 'Erro ao carregar abrigados';
-        toast.error(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isInstitution) {
-      loadAbrigados();
+    if (isInstitution && userProfile && homeless) {
+      // Filtrar abrigados da instituição atual
+      const institutionAbrigados = homeless.filter(
+        (abrigado: any) => abrigado.institution_id === userProfile.id
+      );
+      
+      console.log('Abrigados filtrados para instituição:', institutionAbrigados);
+      setAbrigados(institutionAbrigados);
+      setLoading(false);
+    } else if (!dataLoading) {
+      setLoading(false);
     }
-  }, [isInstitution, token]);
+  }, [isInstitution, userProfile, homeless, dataLoading]);
 
   const formatDate = (dateString: string) => {
     if (!dateString) return 'Data não informada';
@@ -81,14 +80,10 @@ export default function MeusAbrigados() {
 
   const handleSaveEdit = async () => {
     try {
-      if (!token || !editingId) return;
+      if (!editingId) return;
 
-      const response = await api.put(`/homeless/${editingId}`, editForm, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
+      await updateHomeless(editingId, editForm);
+      
       // Atualizar a lista local
       setAbrigados(prev => 
         prev.map(abrigado => 
@@ -96,13 +91,11 @@ export default function MeusAbrigados() {
         )
       );
 
-      toast.success('Abrigado atualizado com sucesso!');
       setEditingId(null);
       setEditForm({});
     } catch (error: any) {
       console.error('Erro ao atualizar abrigado:', error);
-      const errorMessage = error.response?.data?.message || 'Erro ao atualizar abrigado';
-      toast.error(errorMessage);
+      // O toast de erro já é mostrado pela função updateHomeless
     }
   };
 
@@ -112,21 +105,23 @@ export default function MeusAbrigados() {
     }
 
     try {
-      if (!token) return;
+      // Usar Supabase para deletar
+      const { supabase } = await import('../../services/supabase');
+      const { error } = await supabase
+        .from('homeless')
+        .delete()
+        .eq('id', id);
 
-      await api.delete(`/homeless/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      if (error) {
+        throw error;
+      }
 
       // Remover da lista local
       setAbrigados(prev => prev.filter(abrigado => abrigado.id !== id));
       toast.success('Abrigado removido com sucesso!');
     } catch (error: any) {
       console.error('Erro ao excluir abrigado:', error);
-      const errorMessage = error.response?.data?.message || 'Erro ao excluir abrigado';
-      toast.error(errorMessage);
+      toast.error('Erro ao excluir abrigado');
     }
   };
 
