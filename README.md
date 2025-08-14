@@ -44,37 +44,141 @@ O sistema atende pessoas que frequentam:
 
 ## ✨ **Funcionalidades Implementadas**
 
-### 🔐 **Sistema de Autenticação**
-- [x] **Login seguro** com JWT (JSON Web Tokens)
-- [x] **Cadastro de instituições** (ONGs/Empresas com CNPJ)
-- [x] **Cadastro de pessoas em situação de rua** (com CPF)
-- [x] **Autenticação diferenciada** por tipo de usuário
-- [x] **Proteção de rotas** privadas
+### 🔐 **Sistema de Autenticação Avançado**
+- [x] **Autenticação com Supabase** - Sistema robusto e seguro
+- [x] **Login unificado** com validação via `react-hook-form` e `yup`
+- [x] **Cadastro diferenciado** por tipo de usuário (Instituições vs Pessoas Abrigadas)
+- [x] **Proteção de rotas** com componentes `PrivateRoutes` e `InstitutionRoutes`
+- [x] **Sincronização de contextos** entre SupabaseAuthContext e AuthContext tradicional
+- [x] **Gerenciamento de sessão** automático com persistência
+- [x] **Logout seguro** com limpeza completa de dados
 
-### 👥 **Gestão de Usuários**
-- [x] **Perfil completo de instituições** (Nome, CNPJ, endereço, telefone, email, foto)
-- [x] **Perfil completo de pessoas abrigadas** (Nome, idade, CPF, telefone, email, foto)
+### 👥 **Gestão Completa de Usuários**
+
+#### **🏢 Para Instituições (ONGs/Empresas)**
+- [x] **Perfil institucional completo** (Nome, CNPJ, endereço, telefone, email, foto)
+- [x] **Dashboard administrativo** com estatísticas e controles
+- [x] **Cadastro de abrigados** através de formulário dedicado
+- [x] **Gestão de abrigados** na página "Meus Abrigados"
+- [x] **Visualização de pessoas cadastradas** com filtros e busca
+- [x] **Edição e exclusão** de dados de abrigados
+- [x] **Relatórios institucionais** com funcionalidade de impressão
+
+#### **🤝 Para Pessoas Abrigadas**
+- [x] **Perfil pessoal detalhado** (Nome, idade, CPF, telefone, email, foto, descrição)
+- [x] **Auto-cadastro** com validação de dados
 - [x] **Edição de perfil** em tempo real
-- [x] **Validação de dados** com feedback visual
-- [x] **Upload de fotos** de perfil
+- [x] **Dashboard personalizado** com informações relevantes
+- [x] **Acesso restrito** a dados pessoais apenas
+- [x] **Proteção de privacidade** com controles de acesso
 
-### 🏠 **Cadastro de Pessoas em Situação de Rua**
-- [x] **Cadastro por instituições** (pessoas sem login próprio)
-- [x] **Auto-cadastro** (pessoas com login próprio)
-- [x] **Informações detalhadas** (história, habilidades, localização)
-- [x] **Vinculação com instituições** responsáveis
-- [x] **Gestão de abrigados** por instituição
+### 🏠 **Sistema de Cadastro de Pessoas em Situação de Rua**
+- [x] **Cadastro duplo**: Por instituições ou auto-cadastro
+- [x] **Informações detalhadas**: História pessoal, necessidades especiais, habilidades
+- [x] **Vinculação institucional**: Conexão com organizações responsáveis
+- [x] **Validação robusta**: CPF, idade, telefone com formatação automática
+- [x] **Upload de fotos**: Sistema de imagens de perfil
+- [x] **Histórico de cadastro**: Data de criação e última atualização
 
-### 📊 **Dashboard e Relatórios**
-- [x] **Dashboard institucional** com estatísticas
-- [x] **Lista de abrigados** por instituição
-- [x] **Formulário de cadastro** integrado
-- [x] **Visualização pública** de pessoas cadastradas
-- [x] **Sistema de busca** e filtros
+### 📊 **Dashboard e Relatórios Avançados**
 
-### 🔧 **Funcionalidades Técnicas**
-- [x] **API RESTful** completa
+#### **📈 Dashboard Institucional**
+- [x] **Estatísticas em tempo real** de abrigados
+- [x] **Formulário de cadastro integrado** com validação
+- [x] **Lista completa de abrigados** com ações de edição/exclusão
+- [x] **Cartão de usuário** com informações da instituição
+- [x] **Acesso rápido** a funcionalidades principais
+
+#### **👤 Dashboard Pessoal**
+- [x] **Perfil visual atrativo** com foto e informações
+- [x] **Edição inline** de dados pessoais
+- [x] **Validação em tempo real** de formulários
+- [x] **Feedback visual** para ações do usuário
+
+### 🔍 **Sistema de Busca e Visualização**
+- [x] **Página pública** de pessoas cadastradas
+- [x] **Sistema de busca** por nome com filtro em tempo real
+- [x] **Paginação** para grandes volumes de dados
+- [x] **Cards visuais** com informações essenciais
+- [x] **Controle de acesso** baseado no tipo de usuário
+- [x] **Proteção de dados** para abrigados
+
+### 🖨️ **Sistema de Impressão e Relatórios**
+- [x] **Hook personalizado** `usePrintToPDF` para geração de PDFs
+- [x] **Componente PrintButton** reutilizável
+- [x] **Formatação automática** para impressão
+- [x] **Exclusão de elementos** não relevantes (botões, menus)
+- [x] **Títulos personalizados** e nomes de arquivo
+- [x] **Estilos otimizados** para impressão
+
+### 🎨 **Interface e Experiência do Usuário**
+- [x] **Design responsivo** mobile-first
+- [x] **Animações suaves** com `framer-motion`
+- [x] **Componente AnimatedPage** para transições
+- [x] **Styled Components** para estilização consistente
+- [x] **Feedback visual** com `react-toastify`
+- [x] **Formulários inteligentes** com `react-hook-form`
+- [x] **Validação em tempo real** com `yup`
+- [x] **Formatação automática** de telefone e CPF
+
+### 🔧 **Funcionalidades Técnicas Avançadas**
+- [x] **Arquitetura Supabase** com Edge Functions
+- [x] **API RESTful** completa com endpoints especializados
 - [x] **Validação de dados** no frontend e backend
+- [x] **Contextos React** para gerenciamento de estado
+- [x] **Hooks personalizados** para funcionalidades específicas
+- [x] **Componentes reutilizáveis** e modulares
+- [x] **Roteamento protegido** com controle de acesso
+- [x] **Sincronização de dados** em tempo real
+- [x] **Tratamento de erros** robusto
+- [x] **Loading states** para melhor UX
+
+### 🏗️ **Arquitetura e Estrutura**
+
+#### **🔄 Contextos de Autenticação**
+- **SupabaseAuthContext**: Gerenciamento principal de autenticação
+- **AuthContext**: Sincronização com sistema tradicional
+- **DataContext**: Gerenciamento de dados de usuários e abrigados
+
+#### **🛡️ Proteção de Rotas**
+- **PrivateRoutes**: Acesso apenas para usuários logados
+- **InstitutionRoutes**: Acesso exclusivo para instituições
+- **Redirecionamento automático** baseado no tipo de usuário
+
+#### **📱 Páginas Principais**
+- **Home**: Página inicial pública
+- **Login**: Autenticação unificada
+- **Register**: Cadastro diferenciado por tipo
+- **Dashboard**: Painel principal para usuários logados
+- **Profile**: Edição de perfil com validação
+- **HomeLess**: Visualização pública de pessoas cadastradas
+- **MeusAbrigados**: Gestão de abrigados (apenas instituições)
+
+#### **🧩 Componentes Especializados**
+- **CardUsuario**: Cartão de perfil com edição inline
+- **PrintButton**: Botão de impressão reutilizável
+- **AnimatedPage**: Transições suaves entre páginas
+- **Header/Footer**: Navegação e rodapé consistentes
+
+#### **🔧 Hooks Personalizados**
+- **usePrintToPDF**: Geração de PDFs com formatação
+- **Validação automática**: Formatação de CPF e telefone
+- **Gerenciamento de estado**: Sincronização de dados
+
+### 🌐 **Integração Supabase**
+- [x] **Edge Functions** para lógica de backend
+- [x] **Autenticação nativa** do Supabase
+- [x] **Banco de dados PostgreSQL** gerenciado
+- [x] **APIs automáticas** geradas pelo Supabase
+- [x] **Realtime subscriptions** para atualizações
+- [x] **Row Level Security** para proteção de dados
+
+#### **📊 Edge Functions Implementadas**
+- **status**: Verificação de saúde do sistema
+- **auth**: Gerenciamento de autenticação
+- **homeless**: CRUD de pessoas em situação de rua
+- **institutions**: Gestão de instituições
+- **homeless-by-institution**: Abrigados por instituição
 - [x] **Tratamento de erros** com notificações
 - [x] **Interface responsiva** (mobile e desktop)
 - [x] **Navegação protegida** por autenticação
@@ -131,15 +235,26 @@ O layout da aplicação está disponível no Figma:
 - ✅ **Yup** - Validação de esquemas
 - 🚀 **React Router DOM** - Roteamento de páginas
 - 🔔 **React Toastify** - Notificações toast
+- 🎬 **Framer Motion** - Animações e transições
+- 🖨️ **React Icons** - Biblioteca de ícones
 - 📱 **Design Responsivo** - Mobile-first approach
 
-### **Backend**
-- 🟢 **Node.js** - Runtime JavaScript
-- ⚡ **Express.js** - Framework web minimalista
-- 🔐 **JWT (jsonwebtoken)** - Autenticação via tokens
-- 🔒 **bcryptjs** - Criptografia de senhas
+### **Backend e Infraestrutura**
+- 🚀 **Supabase** - Backend-as-a-Service completo
+- 🐘 **PostgreSQL** - Banco de dados relacional
+- ⚡ **Edge Functions** - Funções serverless
+- 🔐 **Supabase Auth** - Sistema de autenticação
+- 🔒 **Row Level Security** - Segurança a nível de linha
+- 🌐 **Realtime** - Atualizações em tempo real
 - 🆔 **UUID** - Geração de identificadores únicos
-- 🌐 **CORS** - Configuração de Cross-Origin Resource Sharing
+- 🌍 **CORS** - Configuração de Cross-Origin Resource Sharing
+
+### **Autenticação e Segurança**
+- 🔑 **Supabase Auth** - Autenticação nativa
+- 🛡️ **JWT Tokens** - Tokens de acesso seguros
+- 🔐 **Contextos React** - Gerenciamento de estado de auth
+- 🚪 **Proteção de Rotas** - Controle de acesso
+- 🔒 **Validação de Dados** - Frontend e backend
 
 ### **Ferramentas de Desenvolvimento**
 - 🎨 **Figma** - Design e prototipação
@@ -147,6 +262,47 @@ O layout da aplicação está disponível no Figma:
 - 🔧 **Git** - Controle de versão
 - 🐙 **GitHub** - Repositório e colaboração
 - 📦 **npm/yarn** - Gerenciamento de pacotes
+- 🧪 **Supabase CLI** - Desenvolvimento local
+- 🔍 **TypeScript** - Tipagem estática
+
+## 🧪 **Credenciais de Teste**
+
+Para facilitar os testes do sistema, utilize as seguintes credenciais:
+
+### 🏢 **Instituições de Teste**
+
+| Instituição | Email | Senha | CNPJ | Descrição |
+|-------------|-------|-------|------|----------|
+| **Casa de Apoio Esperança** | casa.esperanca@teste.com | 123456 | 12.345.678/0001-90 | ONG especializada em acolhimento |
+| **Instituto Vida Nova** | instituto.vidanova@teste.com | 123456 | 98.765.432/0001-10 | Centro de capacitação profissional |
+
+### 🤝 **Pessoas Carentes de Teste**
+
+| Nome | Email | Senha | CPF | Idade | Situação |
+|------|-------|-------|-----|-------|----------|
+| **João Silva** | joao.silva@teste.com | 123456 | 123.456.789-01 | 35 | Com login próprio |
+| **Maria Santos** | maria.santos@teste.com | 123456 | 987.654.321-09 | 28 | Com login próprio |
+
+### 📝 **Como Testar**
+
+1. **Teste como Instituição**:
+   - Faça login com uma das contas institucionais
+   - Acesse o Dashboard para cadastrar novos abrigados
+   - Visite "Meus Abrigados" para gerenciar pessoas cadastradas
+   - Use "Pesquisa Pessoas" para visualizar todos os cadastros
+
+2. **Teste como Pessoa Abrigada**:
+   - Faça login com uma das contas pessoais
+   - Acesse o Dashboard para ver suas informações
+   - Edite seu perfil na página "Perfil"
+   - Note que o acesso é restrito apenas aos seus dados
+
+3. **Teste Funcionalidades**:
+   - ✅ Cadastro de novos usuários
+   - ✅ Edição de perfis
+   - ✅ Sistema de busca
+   - ✅ Geração de relatórios PDF
+   - ✅ Controles de acesso por tipo de usuário
 
 ## 🚀 **Como Carregar e Executar o Programa**
 
@@ -308,48 +464,129 @@ Agora você tem o **Social Dev** rodando completamente em sua máquina!
 
 **💡 Dica:** Mantenha ambos os terminais abertos enquanto usa o sistema.
 
-## 📡 **API Endpoints**
+## 📡 **API e Endpoints**
 
-### **🔐 Autenticação**
-- `POST /login` - Login de usuários (instituições e pessoas abrigadas)
+### **🚀 Arquitetura Supabase**
+O sistema utiliza **Supabase Edge Functions** para lógica de backend, proporcionando:
+- ⚡ **Performance otimizada** com funções serverless
+- 🔒 **Segurança integrada** com Row Level Security
+- 🌐 **Escalabilidade automática**
+- 🔄 **Atualizações em tempo real**
 
-### **📝 Cadastro**
-- `POST /register/institution` - Cadastro de instituições
-- `POST /abrigados/register` - Cadastro de pessoas em situação de rua
+### **🔐 Autenticação (Supabase Auth)**
+- `POST /auth/v1/signup` - Cadastro de novos usuários
+- `POST /auth/v1/token` - Login e obtenção de tokens
+- `POST /auth/v1/logout` - Logout seguro
+- `GET /auth/v1/user` - Dados do usuário autenticado
+- `PUT /auth/v1/user` - Atualização de perfil
 
-### **👤 Perfis (Requer autenticação)**
-- `GET /register/institution/profile` - Buscar perfil da instituição
-- `PATCH /register/institution/profile` - Atualizar perfil da instituição
-- `GET /abrigados/profile` - Buscar perfil da pessoa abrigada
-- `PATCH /abrigados/profile` - Atualizar perfil da pessoa abrigada
+### **📊 Edge Functions Implementadas**
 
-### **🏠 Gestão de Pessoas em Situação de Rua**
-- `GET /homeless` - Listar pessoas cadastradas (público)
-- `POST /homeless` - Cadastrar pessoa (apenas instituições)
-- `PUT /homeless/:id` - Atualizar dados da pessoa (apenas instituições)
-- `DELETE /homeless/:id` - Remover pessoa (apenas instituições)
+#### **🏥 Status do Sistema**
+- `GET /functions/v1/status` - Verificação de saúde e estatísticas
 
-### **📊 Relatórios e Estatísticas**
-- `GET /status` - Status do servidor e estatísticas gerais
-- `GET /institutions/abrigados` - Listar abrigados da instituição (autenticado)
+#### **👤 Gestão de Autenticação**
+- `POST /functions/v1/auth` - Operações de autenticação customizadas
 
-### **🔧 Debug (Desenvolvimento)**
-- `GET /debug/institutions` - Listar todas as instituições cadastradas
+#### **🏠 Gestão de Pessoas em Situação de Rua**
+- `GET /functions/v1/homeless` - Listar pessoas cadastradas
+- `POST /functions/v1/homeless` - Cadastrar nova pessoa
+- `PUT /functions/v1/homeless` - Atualizar dados da pessoa
+- `DELETE /functions/v1/homeless` - Remover pessoa do sistema
+
+#### **🏢 Gestão de Instituições**
+- `GET /functions/v1/institutions` - Listar instituições
+- `POST /functions/v1/institutions` - Cadastrar instituição
+- `PUT /functions/v1/institutions` - Atualizar dados institucionais
+
+#### **📋 Abrigados por Instituição**
+- `GET /functions/v1/homeless-by-institution` - Listar abrigados de uma instituição específica
+
+### **🛡️ Segurança e Controle de Acesso**
+- **Row Level Security (RLS)**: Proteção automática de dados
+- **JWT Tokens**: Autenticação segura
+- **Políticas de acesso**: Controle granular por tipo de usuário
+- **Validação de dados**: Frontend e backend
+
+### **📊 Tabelas do Banco de Dados**
+- **institutions**: Dados das organizações
+- **homeless**: Informações das pessoas cadastradas
+- **auth.users**: Usuários do sistema (Supabase)
+- **Relacionamentos**: Chaves estrangeiras para integridade
 
 ## 💾 **Banco de Dados**
 
-Atualmente o sistema utiliza **armazenamento em memória** para demonstração. Os dados incluem:
+O sistema utiliza **PostgreSQL** gerenciado pelo Supabase, proporcionando:
 
-### **📊 Estatísticas Atuais**
-- **2 instituições** cadastradas
-- **4 pessoas** em situação de rua cadastradas
-- **2 pessoas** com login próprio
-- **2 pessoas** cadastradas por instituições
+### **🏗️ Estrutura do Banco**
 
-### **🔄 Para Produção**
-Para ambiente de produção, recomenda-se integrar com:
-- 🐘 **PostgreSQL** - Banco relacional robusto
-- 🍃 **MongoDB** - Banco NoSQL flexível
+#### **👥 Tabela: auth.users (Supabase)**
+- `id` (UUID) - Identificador único do usuário
+- `email` (VARCHAR) - Email para login
+- `encrypted_password` (VARCHAR) - Senha criptografada
+- `email_confirmed_at` (TIMESTAMP) - Confirmação de email
+- `created_at` (TIMESTAMP) - Data de criação
+- `updated_at` (TIMESTAMP) - Última atualização
+
+#### **🏢 Tabela: institutions**
+- `id` (UUID) - Chave primária
+- `user_id` (UUID) - Referência ao auth.users
+- `name` (VARCHAR) - Nome da instituição
+- `cnpj` (VARCHAR) - CNPJ único
+- `email` (VARCHAR) - Email institucional
+- `telephone` (VARCHAR) - Telefone de contato
+- `address` (TEXT) - Endereço completo
+- `picture` (TEXT) - URL da foto/logo
+- `created_at` (TIMESTAMP) - Data de cadastro
+- `updated_at` (TIMESTAMP) - Última atualização
+
+#### **🤝 Tabela: homeless**
+- `id` (UUID) - Chave primária
+- `user_id` (UUID) - Referência ao auth.users (opcional)
+- `institution_id` (UUID) - Referência à instituição responsável
+- `name` (VARCHAR) - Nome completo
+- `email` (VARCHAR) - Email (opcional)
+- `cpf` (VARCHAR) - CPF único
+- `rg` (VARCHAR) - RG
+- `age` (INTEGER) - Idade
+- `birth_date` (DATE) - Data de nascimento
+- `telephone` (VARCHAR) - Telefone de contato
+- `address` (TEXT) - Endereço atual
+- `picture` (TEXT) - URL da foto
+- `description` (TEXT) - Informações adicionais
+- `registered_by` (VARCHAR) - Quem cadastrou (institution/self)
+- `has_login` (BOOLEAN) - Possui login próprio
+- `created_at` (TIMESTAMP) - Data de cadastro
+- `updated_at` (TIMESTAMP) - Última atualização
+
+### **🔒 Segurança (Row Level Security)**
+
+#### **Políticas de Acesso:**
+- **Instituições**: Acesso total aos seus abrigados
+- **Pessoas abrigadas**: Acesso apenas aos próprios dados
+- **Público**: Visualização limitada de dados não sensíveis
+- **Administradores**: Acesso completo (futuro)
+
+### **📊 Estatísticas do Sistema**
+- **Instituições ativas**: Cadastradas e verificadas
+- **Pessoas assistidas**: Total de cadastros
+- **Usuários com login**: Pessoas com acesso próprio
+- **Cadastros por instituição**: Pessoas registradas por organizações
+
+### **🔄 Funcionalidades do Banco**
+- **Backup automático**: Supabase gerencia backups
+- **Escalabilidade**: Ajuste automático de recursos
+- **Realtime**: Atualizações em tempo real
+- **APIs automáticas**: Geradas automaticamente
+- **Migrações**: Controle de versão do schema
+
+### **🌐 Para Produção**
+O sistema já está preparado para produção com:
+- 🚀 **Supabase PostgreSQL** - Banco gerenciado e otimizado
+- 🔒 **Segurança enterprise** - Row Level Security
+- 📈 **Escalabilidade automática** - Ajuste conforme demanda
+- 🌍 **CDN global** - Performance otimizada
+- 📊 **Monitoramento integrado** - Métricas e logs
 - 🔥 **Firebase** - Banco em tempo real
 - ☁️ **AWS RDS** - Banco gerenciado na nuvem
 
@@ -371,20 +608,41 @@ Para ambiente de produção, recomenda-se integrar com:
 
 ## 🚀 **Próximos Passos e Melhorias**
 
-### **📈 Funcionalidades Planejadas**
-- 📧 **Sistema de Notificações** - Email e SMS
-- 📊 **Dashboard Avançado** - Gráficos e relatórios
-- 🗺️ **Mapa Interativo** - Localização de instituições
-- 📱 **App Mobile** - React Native
-- 🤖 **Chatbot** - Assistente virtual
-- 🌐 **Multilíngue** - Suporte a múltiplos idiomas
+### **✅ Funcionalidades Já Implementadas**
+- [x] **Sistema de autenticação** robusto com Supabase
+- [x] **Gestão completa de usuários** (instituições e abrigados)
+- [x] **Dashboard interativo** com estatísticas
+- [x] **Sistema de busca** e filtros
+- [x] **Geração de relatórios PDF** personalizados
+- [x] **Interface responsiva** mobile-first
+- [x] **Validação de dados** em tempo real
+- [x] **Proteção de rotas** por tipo de usuário
+- [x] **Sincronização de dados** automática
+- [x] **Animações e transições** suaves
+
+### **🎯 Funcionalidades Planejadas**
+- [ ] **Sistema de notificações** push em tempo real
+- [ ] **Chat integrado** entre instituições e pessoas
+- [ ] **Mapa interativo** com localização de abrigos
+- [ ] **Sistema de doações** online integrado
+- [ ] **Relatórios avançados** com gráficos e analytics
+- [ ] **App mobile** nativo (React Native)
+- [ ] **Sistema de voluntariado** com matching
+- [ ] **API pública** para integração com outros sistemas
+- [ ] **Sistema de agendamento** de atendimentos
+- [ ] **Módulo de capacitação** online
 
 ### **🔧 Melhorias Técnicas**
-- 💾 **Banco de Dados Persistente** - PostgreSQL/MongoDB
-- ☁️ **Deploy na Nuvem** - AWS/Vercel/Heroku
-- 🧪 **Testes Automatizados** - Jest/Cypress
-- 📦 **CI/CD Pipeline** - GitHub Actions
-- 🐳 **Containerização** - Docker
+- [ ] **Testes automatizados** (Jest, Cypress, Playwright)
+- [ ] **CI/CD** com GitHub Actions
+- [ ] **Docker** para containerização
+- [ ] **Monitoramento** avançado com Sentry
+- [ ] **Cache** inteligente para performance
+- [ ] **PWA** (Progressive Web App)
+- [ ] **Internacionalização** (i18n) multi-idioma
+- [ ] **Acessibilidade** completa (WCAG 2.1)
+- [ ] **Otimização SEO** para páginas públicas
+- [ ] **Backup automático** de dados críticos
 
 ## 😯 **Como Contribuir para o Projeto**
 
