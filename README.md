@@ -5,6 +5,12 @@
 ## 🔭 Acesse o Deploy do Projeto Aqui: [Programa Brasil Infinity Brasil]()
 
 Link no Vercel para visualizar a aplicação: https://programa-brasil-infinity.vercel.app/
+Para teste utilize:
+- diegoaam@hotmail.com (abrigado / user)
+- ajuda@infinity.com (instituição)
+- contato@ajudeme.com (instituição)
+
+senha: 123456
 
 ## 💻 Sobre o projeto
 
