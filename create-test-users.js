@@ -2,10 +2,12 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseServiceKey = process.env.REACT_APP_SUPABASE_SERVICE_ROLE_KEY;
+// Para scripts de desenvolvimento, use variáveis de ambiente do sistema (sem REACT_APP_)
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ Variáveis de ambiente SUPABASE_URL e SERVICE_ROLE_KEY são obrigatórias');
+  console.error('❌ Variáveis de ambiente SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY são obrigatórias');
+  console.error('💡 Para scripts de desenvolvimento, defina SUPABASE_SERVICE_ROLE_KEY como variável de ambiente do sistema');
   process.exit(1);
 }
 

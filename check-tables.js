@@ -3,7 +3,8 @@ const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_SERVICE_ROLE_KEY
+  // Para scripts de desenvolvimento, use variável de ambiente do sistema
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 async function checkTables() {
