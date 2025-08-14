@@ -39,3 +39,5 @@ supabase/.temp/
 # Arquivos de configuração com credenciais
 config/secrets.json
 config/credentials.json
+
+.vercel

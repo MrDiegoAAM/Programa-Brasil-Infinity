@@ -75,7 +75,7 @@ export default function DashBoard() {
 
       await createHomeless({
         name: data.name,
-        age: data.age,
+        age: String(data.age),
         cpf: data.cpf,
         telephone: data.telephone,
         address: data.address,
