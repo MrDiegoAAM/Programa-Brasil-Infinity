@@ -71,6 +71,14 @@ export default function Menu() {
         </DivMatriz>
 
         <div>
+          {/* Botão Perfil aparece primeiro quando logado */}
+          {isLogin && (
+            <Link to="/profile" replace>
+              <CgProfile />
+              Perfil
+            </Link>
+          )}
+          
           <Link to="/home" replace>
             <BiHome />
             Home
@@ -93,19 +101,13 @@ export default function Menu() {
             <BiDonateHeart />
             Apoie Agora
           </Link>
+          
+          {/* Botão Login/Logout no final */}
           {isLogin ? (
-            <>
-              <Link to="/profile" replace>
-                {" "}
-                <CgProfile />
-                Perfil{" "}
-              </Link>
-              <Link to="/home" replace onClick={logout}>
-                {" "}
-                <BiLogOut />
-                Logout
-              </Link>
-            </>
+            <Link to="/home" replace onClick={logout}>
+              <BiLogOut />
+              Logout
+            </Link>
           ) : (
             <Link to="/login" replace>
               <BiLogIn /> Login

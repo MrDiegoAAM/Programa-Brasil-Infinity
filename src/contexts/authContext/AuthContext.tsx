@@ -4,6 +4,8 @@ import api from "../../server/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import jwt from "jsonwebtoken";
+import { useAuth } from "./SupabaseAuthContext";
+import { useData } from "./DataContext";
 
 interface IHomelessProps {
   img: string;
@@ -74,6 +76,50 @@ export default function AuthProvider({ children }: IChildrenProps) {
   const [isAbrigado, setIsAbrigado] = useState(false);
   const [homeLess, setHomeLess] = useState<IRegisterPerson[]>([]);
   const [token, setToken] = useState<string | null>(null);
+  
+  // Integração com SupabaseAuthContext
+  const { user: supabaseUser, session } = useAuth();
+  const { userProfile } = useData();
+
+  // Sincronizar estado de autenticação do Supabase com AuthContext tradicional
+  useEffect(() => {
+    console.log("🔄 Sincronizando estado de autenticação do Supabase...");
+    console.log("👤 Usuário Supabase:", supabaseUser ? "Logado" : "Não logado");
+    console.log("📋 Perfil do usuário:", userProfile);
+    
+    if (supabaseUser && userProfile) {
+      console.log("✅ Usuário logado no Supabase, atualizando AuthContext tradicional...");
+      setIsLogin(true);
+      setUser(userProfile);
+      
+      // Determinar tipo de usuário baseado no perfil
+      if ('cnpj' in userProfile) {
+        console.log("🏢 Usuário é uma instituição");
+        setIsInstitution(true);
+        setIsAbrigado(false);
+      } else if ('cpf' in userProfile) {
+        console.log("👤 Usuário é um abrigado");
+        setIsAbrigado(true);
+        setIsInstitution(false);
+      }
+      
+      // Simular token para compatibilidade com sistema antigo
+      const mockToken = `supabase-${session?.access_token?.substring(0, 20) || 'mock'}`;
+      setToken(mockToken);
+      localStorage.setItem("@TOKEN", mockToken);
+      localStorage.setItem("@type", 'cnpj' in userProfile ? "institution" : "abrigado");
+      
+    } else if (!supabaseUser) {
+      console.log("❌ Usuário não logado no Supabase, limpando AuthContext tradicional...");
+      setIsLogin(false);
+      setUser({});
+      setIsInstitution(false);
+      setIsAbrigado(false);
+      setToken(null);
+      localStorage.removeItem("@TOKEN");
+      localStorage.removeItem("@type");
+    }
+  }, [supabaseUser, userProfile, session]);
 
   const logout = () => {
     toast.success("Logout realizado com sucesso!", {
