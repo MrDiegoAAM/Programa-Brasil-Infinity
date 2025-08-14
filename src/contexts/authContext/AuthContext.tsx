@@ -122,11 +122,30 @@ export default function AuthProvider({ children }: IChildrenProps) {
     }
   }, [supabaseUser, userProfile, session]);
 
+  // Função para mapear dados do Supabase para o formato do AuthContext
+  const mapHomelessToRegisterPerson = (homeless: any[]): IRegisterPerson[] => {
+    return homeless.map((person: any) => ({
+      id: person.id,
+      name: person.name,
+      age: person.age ? parseInt(person.age) : 0,
+      cpf: person.cpf || '',
+      telephone: person.telephone || '',
+      address: person.address || '',
+      description: person.description || '',
+      institution: person.institution_name || 'Não informado',
+      picture: person.picture || '',
+      contact: person.telephone || '',
+      created_at: person.created_at,
+      abrigado: person.name
+    }));
+  };
+
   // Sincronizar dados de abrigados do Supabase com AuthContext
   useEffect(() => {
     if (supabaseHomeless && supabaseHomeless.length > 0) {
       console.log("🔄 Sincronizando dados de abrigados do Supabase...");
-      setHomeLess(supabaseHomeless);
+      const mappedData = mapHomelessToRegisterPerson(supabaseHomeless);
+      setHomeLess(mappedData);
     }
   }, [supabaseHomeless]);
 
@@ -273,7 +292,8 @@ export default function AuthProvider({ children }: IChildrenProps) {
         item.rg?.includes(searchFor)
       );
       console.log("✅ Resultados da busca:", filteredData);
-      setHomeLess(filteredData);
+      const mappedFilteredData = mapHomelessToRegisterPerson(filteredData);
+      setHomeLess(mappedFilteredData);
     } else {
       console.log("⚠️ Nenhum dado disponível para busca");
       toast.warning("Nenhum dado disponível para busca");
@@ -284,7 +304,8 @@ export default function AuthProvider({ children }: IChildrenProps) {
     // Usar dados do Supabase em vez de fazer chamadas diretas para API
     if (isLogin && supabaseHomeless) {
       console.log("🔄 Usando dados do Supabase para abrigados...");
-      setHomeLess(supabaseHomeless);
+      const mappedData = mapHomelessToRegisterPerson(supabaseHomeless);
+      setHomeLess(mappedData);
     }
   }, [nextPage, isLogin, supabaseHomeless]);
 
