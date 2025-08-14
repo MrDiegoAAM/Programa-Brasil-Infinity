@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import CardUsuario from "../../components/CardUsuario/CardUsuario";
 import { IRegisterPerson as IRegisterInstitution } from "../../components/ModalRegister/ModalRegister";
 import { AuthContext } from "../../contexts/authContext/AuthContext";
+import PrintButton from "../../components/PrintButton";
+import { usePrintToPDF } from "../../hooks/usePrintToPDF";
 
 interface IDataUserprops {
   adress: string;
@@ -41,6 +43,7 @@ export interface IRegisterPerson {
 export default function DashBoard() {
   const userId = Number(localStorage.getItem("@userId"));
   const { isAbrigado, isInstitution } = useContext(AuthContext);
+  const { printToPDF } = usePrintToPDF();
 
   const schema = yup.object().shape({
     name: yup.string().required("Campo obrigatório"),
@@ -57,32 +60,26 @@ export default function DashBoard() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<IRegisterPerson>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: IRegisterPerson) => {
-    // data.userId = userId;
-    const type = localStorage.getItem("@type");
+  const onSubmit = async (data: IRegisterPerson) => {
+    const dataToSend = {
+      ...data,
+      userId: userId,
+    };
 
-    if (type === "abrigado") {
-      toast.error(
-        `É necessário estar vinculado a uma instituição para cadastrar um abrigado`
-      );
-      return;
-    } else {
-      api
-        .post("/homeless", data)
-        .then((res) => {
-          console.log(res);
-          if (res.status === 201) {
-            toast.success("Abrigado cadastrado com sucesso");
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error(`Ocorreu um erro. Tente novamente.`);
-        });
+    try {
+      const response = await api.post("/homeless", dataToSend);
+      if (response.status === 201) {
+        toast.success("Abrigado cadastrado com sucesso!");
+        reset();
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar abrigado:", error);
+      toast.error("Erro ao cadastrar abrigado. Tente novamente.");
     }
   };
 
@@ -94,6 +91,14 @@ export default function DashBoard() {
           <section className="text">
             <CardUsuario />
           </section>
+          
+          <PrintButton 
+            onPrint={() => printToPDF({ 
+              title: 'Formulário de Cadastro de Abrigado',
+              filename: 'cadastro-abrigado.pdf',
+              excludeSelectors: ['.print-button', 'header', 'footer', 'button[type="submit"]']
+            })}
+          />
           
           {/* Formulário de cadastro apenas para instituições */}
           {isInstitution && (
@@ -107,7 +112,7 @@ export default function DashBoard() {
                   <label htmlFor="">Nome</label>
                   <input
                     type="text"
-                    placeholder="Digite o nome"
+                    placeholder="Nome completo"
                     {...register("name")}
                   />
                   <p className="error-message">{errors.name?.message}</p>
@@ -116,42 +121,42 @@ export default function DashBoard() {
                   <label htmlFor="">Idade</label>
                   <input
                     type="number"
-                    placeholder="Digite a idade"
-                    {...register("age", { valueAsNumber: true })}
+                    placeholder="Idade"
+                    {...register("age")}
                   />
                   <p className="error-message">{errors.age?.message}</p>
                 </div>
                 <div className="input-container">
-                  <label htmlFor="">Descrição física</label>
-                  <textarea
-                    placeholder="Descreva a aparência"
-                    rows={3}
+                  <label htmlFor="">Descrição</label>
+                  <input
+                    type="text"
+                    placeholder="Descrição (opcional)"
                     {...register("description")}
                   />
                   <p className="error-message">{errors.description?.message}</p>
                 </div>
                 <div className="input-container">
-                  <label htmlFor="">Instituição de registro</label>
+                  <label htmlFor="">Instituição</label>
                   <input
                     type="text"
-                    placeholder="Identifique o local de registro"
+                    placeholder="Nome da instituição"
                     {...register("institution")}
                   />
-                  <p className="error-message">
-                    {errors.institution?.message}
-                  </p>
+                  <p className="error-message">{errors.institution?.message}</p>
                 </div>
                 <div className="input-container">
-                  <label htmlFor="">Data de registro</label>
-                  <input type="date" {...register("created_at")} />
+                  <label htmlFor="">Data de cadastro</label>
+                  <input
+                    type="date"
+                    {...register("created_at")}
+                  />
                   <p className="error-message">{errors.created_at?.message}</p>
                 </div>
-
                 <div className="input-container">
                   <label htmlFor="">Abrigado</label>
                   <input
                     type="text"
-                    placeholder="Nome do abrigado registrando"
+                    placeholder="Status do abrigado"
                     {...register("abrigado")}
                   />
                   <p className="error-message">{errors.abrigado?.message}</p>

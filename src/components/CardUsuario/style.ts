@@ -75,7 +75,8 @@ export const CardUser = styled.div`
       .edit-button-container {
         display: flex;
         justify-content: flex-end;
-        margin-bottom: 24px;
+        margin-bottom: 32px;
+        padding: 0 24px;
       }
 
       /* Estilos UX Fix */
@@ -85,17 +86,21 @@ export const CardUser = styled.div`
       }
 
       &.ux-fix .field {
-        margin-bottom: 16px;
+        margin-bottom: 32px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
       }
 
       &.ux-fix .field label.label {
         display: block !important;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-size: 16px;
         font-weight: 600;
-        color: #0F172A;
-        line-height: 1.35;
-        word-break: keep-all;
+        color: #374151;
+        line-height: 1.4;
+        text-align: left;
+        letter-spacing: 0.025em;
       }
 
       &.ux-fix .field input.input,
@@ -103,19 +108,85 @@ export const CardUser = styled.div`
       &.ux-fix .field textarea {
         display: block;
         width: 100%;
-        min-height: 44px;
-        padding: 10px 12px;
-        border: 1px solid #CBD5E1;
-        border-radius: 10px;
+        min-height: 56px;
+        padding: 16px 20px;
+        border: 2px solid #D1D5DB;
+        border-radius: 12px;
         background: #FFFFFF;
-        color: #0F172A;
+        color: #111827;
         outline: none;
         font-size: 16px;
         font-weight: 400;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
         line-height: 1.5;
         box-sizing: border-box;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Estilos específicos para instituições */
+      &.institution-form .field {
+        margin-bottom: 28px;
+        position: relative;
+      }
+
+      &.institution-form .field label.label {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e40af;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          width: 30px;
+          height: 2px;
+          background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+          border-radius: 1px;
+        }
+      }
+
+      &.institution-form .field input.input,
+      &.institution-form .field select,
+      &.institution-form .field textarea {
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        padding: 18px 24px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #1e293b;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        &::placeholder {
+          color: #94a3b8;
+          font-style: italic;
+        }
+      }
+
+      &.institution-form .field input.input:focus,
+      &.institution-form .field select:focus,
+      &.institution-form .field textarea:focus {
+        border-color: #3b82f6;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12), 0 8px 24px rgba(59, 130, 246, 0.15);
+        transform: translateY(-2px);
+      }
+
+      &.institution-form .field input.input:read-only,
+      &.institution-form .field select:disabled,
+      &.institution-form .field textarea:read-only {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-color: #cbd5e1;
+        color: #64748b;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
       }
 
       &.ux-fix .field input.input::placeholder {
@@ -126,21 +197,25 @@ export const CardUser = styled.div`
       &.ux-fix .field select:focus,
       &.ux-fix .field textarea:focus {
         border-color: #10B981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        background: #FEFFFE;
       }
 
-      &.ux-fix .field input.input:read-only {
-        background: #f9fafb;
+      &.ux-fix .field input.input:read-only,
+      &.ux-fix .field select:disabled,
+      &.ux-fix .field textarea:read-only {
+        background: #F9FAFB;
         cursor: default;
-        color: #6b7280;
-        border-color: #CBD5E1;
+        color: #6B7280;
+        border-color: #E5E7EB;
       }
 
       &.ux-fix .help {
-        margin-top: 6px;
-        font-size: 12px;
-        color: #64748B;
-        line-height: 1.3;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #6B7280;
+        line-height: 1.4;
+        font-style: italic;
       }
 
       &.ux-fix .error {
@@ -159,43 +234,59 @@ export const CardUser = styled.div`
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 40px;
-        padding: 0 16px;
-        border-radius: 10px;
-        background: #10B981;
+        height: 44px;
+        padding: 0 20px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
         color: #fff;
         font-weight: 600;
-        border: 1px solid transparent;
+        font-size: 14px;
+        border: none;
         cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+      }
+
+      &.ux-fix .btn-edit:hover:not(:disabled) {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
       }
 
       &.ux-fix .btn-edit:focus {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      }
+
+      &.ux-fix .btn-edit:disabled {
+        background: #9CA3AF;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
 
       &.ux-fix .form-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 32px;
-        align-items: start;
-
-        @media (max-width: 968px) {
-          grid-template-columns: 1fr;
-          gap: 16px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 50px;
+        padding: 32px;
+        
+        @media (min-width: 768px) {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px 40px;
         }
-
-        .full-width {
+        
+        .field-full {
           grid-column: 1 / -1;
         }
       }
 
       .button-group {
         display: flex;
-        gap: 25px;
+        gap: 20px;
         justify-content: center;
-        margin-top: 50px;
+        margin-top: 80px;
         padding-top: 40px;
         border-top: 2px solid #f3f4f6;
         position: relative;
@@ -225,14 +316,14 @@ export const CardUser = styled.div`
 export const ButtonSalvar = styled.button`
   background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #059669 100%);
   color: white;
-  padding: 18px 36px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 16px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 160px;
+  min-width: 130px;
   position: relative;
   overflow: hidden;
   letter-spacing: 0.3px;
@@ -312,14 +403,14 @@ export const ButtonEditar = styled.button`
 export const ButtonCancelar = styled.button`
   background: linear-gradient(135deg, #64748b 0%, #94a3b8 50%, #475569 100%);
   color: white;
-  padding: 18px 36px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 16px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 160px;
+  min-width: 130px;
   position: relative;
   overflow: hidden;
   letter-spacing: 0.3px;

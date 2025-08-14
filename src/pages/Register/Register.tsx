@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
 import { useData } from "../../contexts/authContext/DataContext";
 import { supabase } from "../../services/supabase";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import PrintButton from "../../components/PrintButton";
+import { usePrintToPDF } from "../../hooks/usePrintToPDF";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import AnimatedPage from "../../components/AnimatedPage";
@@ -21,6 +23,7 @@ export default function Register() {
   const [isAbrigado, setIsAbrigado] = useState(false);
   const [loading, setLoading] = useState(false);
   const customId = "custom-id-yes";
+  const { printToPDF } = usePrintToPDF();
 
   // Carregar instituições quando o componente é montado
   useEffect(() => {
@@ -173,7 +176,16 @@ export default function Register() {
             </div>
 
             {(isInstitution || isAbrigado) && (
-              <form onSubmit={handleSubmit(onSubmitFunction)} className="register-form">
+              <>
+                <PrintButton 
+                  onPrint={() => printToPDF({ 
+                    title: `Formulário de Cadastro - ${isInstitution ? 'Instituição' : 'Abrigado'}`,
+                    filename: `cadastro-${isInstitution ? 'instituicao' : 'abrigado'}.pdf`,
+                    excludeSelectors: ['.print-button', 'header', 'footer', 'button[type="submit"]', '.user-type-selector']
+                  })}
+                />
+                
+                <form onSubmit={handleSubmit(onSubmitFunction)} className="register-form">
                 <div className="form-grid">
                   <div className="input-group">
                     <label htmlFor="name">
@@ -321,7 +333,8 @@ export default function Register() {
                     </p>
                   </div>
                 </div>
-              </form>
+                </form>
+              </>
             )}
 
 
@@ -329,17 +342,7 @@ export default function Register() {
         </Container>
       </AnimatedPage>
       <Footer color="#354A59" />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+
     </>
   );
 }

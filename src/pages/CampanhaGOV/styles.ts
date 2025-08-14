@@ -2,9 +2,10 @@ import styled from "styled-components";
 
 export const Main = styled.div`
   margin-top: 141px;
-  background-color: #fff;
+  background-color: white;
   width: 100%;
   height: auto;
+  min-height: calc(100vh - 141px);
 
   figure{
     width: 100%;

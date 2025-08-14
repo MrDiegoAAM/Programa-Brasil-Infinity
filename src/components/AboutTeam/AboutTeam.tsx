@@ -1,16 +1,19 @@
+import { DeveloperContainer, DeveloperTitle, DeveloperInfo, DeveloperLink, DeveloperBadge } from './styles';
+
 export default function AboutTeam() {
   return (
-    <>
-      <h2 id="team"> O desenvolvedor </h2>
-      <p>
-        <a href="https://www.linkedin.com/in/diego-madeira-9aa920282/" style={{ fontSize: '1.2em' }}>
-          Diego Madeira (Desenvolvedor Full-Stack)
-        </a>
-        <br />
-        <p className="cardDev" style={{ fontSize: '1.2em' }}>
-          "Olá a todos, eu sou Diego Madeira, aluno da Infinity Shcool e entusiasta por tecnologia. Estou no curso de Programação Full-stack com IA, e esse é um dos meus Projetos."
-        </p>
-      </p>
-    </>
+    <DeveloperContainer id="team">
+      <DeveloperTitle>O desenvolvedor</DeveloperTitle>
+      <DeveloperInfo>
+        <DeveloperLink 
+          href="https://www.linkedin.com/in/diego-madeira-9aa920282/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          Diego Madeira
+        </DeveloperLink>
+        <DeveloperBadge>Desenvolvedor Full-Stack</DeveloperBadge>
+      </DeveloperInfo>
+    </DeveloperContainer>
   );
 }

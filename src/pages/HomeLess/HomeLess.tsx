@@ -3,6 +3,8 @@ import { BsSearch } from "react-icons/bs";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
 import { useData } from "../../contexts/authContext/DataContext";
+import PrintButton from "../../components/PrintButton";
+import { usePrintToPDF } from "../../hooks/usePrintToPDF";
 
 import { ContainerHome } from "../Home/styles";
 import {
@@ -28,6 +30,7 @@ export default function HomeLess() {
   const { homeless, userProfile, loading } = useData();
   const [searchFor, setSearchFor] = useState("");
   const [filteredHomeless, setFilteredHomeless] = useState(homeless);
+  const { printToPDF } = usePrintToPDF();
   
   // Determinar tipo de usuário baseado no userProfile
   const isInstitution = userProfile && 'cnpj' in userProfile;
@@ -196,6 +199,16 @@ export default function HomeLess() {
                 </button>
               </DirectionsTop>
             </HeaderSearchHomeLess>
+            
+            <PrintButton 
+              onPrint={() => printToPDF({ 
+                title: 'Relatório de Pessoas Cadastradas',
+                filename: 'pessoas-cadastradas.pdf',
+                excludeSelectors: ['.print-button', 'header', 'footer', '.directions']
+              })}
+              disabled={loading || filteredHomeless.length === 0}
+            />
+            
             <BodyMissing>
               {loading ? (
                 <div style={{ textAlign: 'center', padding: '2rem' }}>

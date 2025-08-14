@@ -6,17 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { IRegisterPerson as IRegisterPersonComplete } from "../ModalRegister/ModalRegister";
 
-// Funções de máscara
-const formatCNPJ = (value: string) => {
-  const cleanValue = value.replace(/\D/g, '');
-  return cleanValue
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d)/, '$1-$2')
-    .replace(/(-\d{2})\d+?$/, '$1');
-};
-
+// Função de máscara
 const formatPhone = (value: string) => {
   const cleanValue = value.replace(/\D/g, '');
   if (cleanValue.length <= 10) {
@@ -218,24 +208,28 @@ export default function CardUsuario() {
         </div>
       </div>
 
-      {/* Cards de Informações Organizadas por Seções */}
+      {/* Card Unificado de Informações */}
       <div style={{
-        display: 'grid',
-        gap: '30px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-        maxWidth: '1200px',
+        maxWidth: '800px',
         margin: '0 auto'
       }}>
-        {/* Card de Informações Pessoais */}
         <CardUser>
           <div className="card-header">
-            <div className="header-icon">👤</div>
-            <h3>Suas Informações Pessoais</h3>
-            <div className="header-subtitle">Mantenha seus dados sempre atualizados</div>
+            <div className="header-icon">📋</div>
+            <div style={{
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <h3 style={{ margin: 0 }}>Suas Informações Completas</h3>
+              <div className="header-subtitle">Mantenha todos os seus dados sempre atualizados</div>
+            </div>
           </div>
           
           <div className="card-content">
-          <div className="form-container">
+          <div className={`form-container ux-fix ${isInstitution ? 'institution-form' : ''}`}>
             <div className="edit-button-container">
               {save ? (
                 <ButtonEditar onClick={() => setSave(true)} disabled className="btn-edit">
@@ -247,10 +241,11 @@ export default function CardUsuario() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmitForm)}>
-              {isInstitution && (
-                <>
-                  <div className="form-grid">
-                    <div className="field">
+              <div className="form-grid">
+                
+                {isInstitution && (
+                  <>
+                    <div className="field field-full">
                       <label className="label" htmlFor="organization-name">Nome da Organização*</label>
                       <input
                         className="input"
@@ -264,58 +259,11 @@ export default function CardUsuario() {
                         {...register("name")}
                       />
                     </div>
-                    
-                    <div className="field">
-                      <label className="label" htmlFor="cnpj">CNPJ</label>
-                      <input
-                        className="input"
-                        id="cnpj"
-                        type="text"
-                        inputMode="numeric"
-                        value={formatCNPJ(watch("cnpj") || "")}
-                        placeholder="00.000.000/0000-00"
-                        readOnly={!save}
-                        onChange={(e) => {
-                          const formatted = formatCNPJ(e.target.value);
-                          setValue("cnpj", formatted);
-                        }}
-                      />
-                    </div>
-                    
-                    <div className="field full-width">
-                      <label className="label" htmlFor="document-id">Documento de identificação da organização</label>
-                      <input
-                        className="input"
-                        id="document-id"
-                        type="text"
-                        maxLength={40}
-                        value={watch("document") || ""}
-                        placeholder="Documento da organização"
-                        readOnly={!save}
-                        {...register("document")}
-                      />
-                    </div>
-                    
-                    <div className="field full-width">
-                      <label className="label" htmlFor="address">Endereço Completo</label>
-                      <input
-                        className="input"
-                        id="address"
-                        type="text"
-                        autoComplete="street-address"
-                        value={watch("address") || ""}
-                        placeholder="Rua, número, bairro, cidade - UF"
-                        readOnly={!save}
-                        {...register("address")}
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
               
-              {isAbrigado && (
-                <>
-                  <div className="form-grid">
+                {isAbrigado && (
+                  <>
                     <div className="field">
                       <label className="label" htmlFor="person-name">Seu Nome Completo*</label>
                       <input
@@ -360,7 +308,7 @@ export default function CardUsuario() {
                       <p className="help">Documento para identificação (opcional)</p>
                     </div>
                     
-                    <div className="field">
+                    <div className="field field-full">
                       <label className="label" htmlFor="person-institution">Organização de Apoio</label>
                       <select
                         className="input"
@@ -379,7 +327,7 @@ export default function CardUsuario() {
                       <p className="help">Local onde você recebe atendimento</p>
                     </div>
                     
-                    <div className="field full-width">
+                    <div className="field field-full">
                       <label className="label" htmlFor="person-description">Conte um Pouco Sobre Você</label>
                       <textarea
                         className="input"
@@ -392,9 +340,45 @@ export default function CardUsuario() {
                       />
                       <p className="help">Compartilhe informações que possam ajudar no seu atendimento (opcional)</p>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+                
+                {isAbrigado && (
+                  <>
+                    <div className="field">
+                      <label className="label" htmlFor="telephone">Telefone para Contato</label>
+                      <input
+                        className="input"
+                        id="telephone"
+                        type="tel"
+                        inputMode="tel"
+                        value={formatPhone(watch("telephone") || "")}
+                        placeholder="(11) 99999-9999"
+                        readOnly={!save}
+                        onChange={(e) => {
+                          const formatted = formatPhone(e.target.value);
+                          setValue("telephone", formatted);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="field field-full">
+                      <label className="label" htmlFor="email">Email</label>
+                      <input
+                        className="input"
+                        id="email"
+                        type="email"
+                        autoComplete="email"
+                        value={watch("email") || ""}
+                        placeholder="seu.email@exemplo.com"
+                        readOnly={!save}
+                        {...register("email")}
+                      />
+                      <p className="help">Para receber informações e atualizações (opcional)</p>
+                    </div>
+                  </>
+                )}
+              </div>
               
               {save && (
                 <div className="button-group">
@@ -409,93 +393,6 @@ export default function CardUsuario() {
             </form>
           </div>
         </div>
-        </CardUser>
-        
-        {/* Card de Contato */}
-        <CardUser>
-          <div className="card-header">
-            <div className="header-icon">📞</div>
-            <h3>Suas Informações de Contato</h3>
-            <div className="header-subtitle">Para que possamos nos comunicar com você</div>
-          </div>
-          
-          <div className="card-content">
-            <div className="form-container">
-              <div className="edit-button-container">
-                {save ? (
-                  <ButtonEditar onClick={() => setSave(true)} disabled className="btn-edit">
-                    Editar
-                  </ButtonEditar>
-                ) : (
-                  <ButtonEditar onClick={() => setSave(true)} className="btn-edit">Editar</ButtonEditar>
-                )}
-              </div>
-
-              <form onSubmit={handleSubmit(onSubmitForm)}>
-                <div className="form-grid">
-                  <div className="field">
-                    <label className="label" htmlFor="telephone">Telefone para Contato</label>
-                    <input
-                      className="input"
-                      id="telephone"
-                      type="tel"
-                      inputMode="tel"
-                      value={formatPhone(watch("telephone") || "")}
-                      placeholder="(11) 99999-9999"
-                      readOnly={!save}
-                      onChange={(e) => {
-                        const formatted = formatPhone(e.target.value);
-                        setValue("telephone", formatted);
-                      }}
-                    />
-                  </div>
-                  
-                  <div className="field">
-                    <label className="label" htmlFor="emergency-contact">Número para emergências ou comunicações importantes</label>
-                    <input
-                      className="input"
-                      id="emergency-contact"
-                      type="tel"
-                      inputMode="tel"
-                      value={formatPhone(watch("emergencyContact") || "")}
-                      placeholder="(11) 99999-9999"
-                      readOnly={!save}
-                      onChange={(e) => {
-                        const formatted = formatPhone(e.target.value);
-                        setValue("emergencyContact", formatted);
-                      }}
-                    />
-                  </div>
-                  
-                  <div className="field">
-                    <label className="label" htmlFor="email">Email</label>
-                    <input
-                      className="input"
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      value={watch("email") || ""}
-                      placeholder="seu.email@exemplo.com"
-                      readOnly={!save}
-                      {...register("email")}
-                    />
-                    <p className="help">Para receber informações e atualizações (opcional)</p>
-                  </div>
-                </div>
-                
-                {save && (
-                  <div className="button-group">
-                    <ButtonSalvar type="submit">
-                      Salvar Alterações
-                    </ButtonSalvar>
-                    <ButtonCancelar type="button" onClick={() => setSave(false)}>
-                      Cancelar
-                    </ButtonCancelar>
-                  </div>
-                )}
-              </form>
-            </div>
-          </div>
         </CardUser>
       </div>
     </>

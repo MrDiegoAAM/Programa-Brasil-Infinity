@@ -3,9 +3,10 @@ import styled from "styled-components";
 export const BodyHomeLess = styled.div`
   margin: 70px 0px 0px 0px;
   padding: 30px 13px 0px 30px;
+  background-color: white;
 
   @media (max-width: 600px) {
-    background-color: #f5f5f5;
+    background-color: white;
   }
 `;
 

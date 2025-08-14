@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
 import { useData } from "../../contexts/authContext/DataContext";
 import { supabase } from "../../services/supabase";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export interface IRegisterPerson {
@@ -306,7 +306,7 @@ export default function ModalRegister({ isRegister, setIsRegister }: ModalRegist
           </p>
         </div>
 
-        <ToastContainer />
+
       </section>
     </DivBack>
   );

@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/authContext/SupabaseAuthContext';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import { DivBack } from './SupabaseLogin.styles';
-import { ToastContainer } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ILoginForm {
@@ -103,17 +103,7 @@ export default function SupabaseLogin() {
       </DivBack>
       <Footer />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+
     </>
   );
 }

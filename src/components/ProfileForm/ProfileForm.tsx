@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileForm.css';
+import { useData } from '../../contexts/authContext/DataContext';
 
 interface FormData {
   name: string;
@@ -15,6 +16,7 @@ interface FormData {
   location: string;
   phone: string;
   emergencyContact: string;
+  importantInfo: string;
 }
 
 interface FormErrors {
@@ -22,6 +24,7 @@ interface FormErrors {
 }
 
 const ProfileForm: React.FC = () => {
+  const { userProfile, institutions, loadInstitutions } = useData();
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -37,7 +40,8 @@ const ProfileForm: React.FC = () => {
     organization: '',
     location: '',
     phone: '',
-    emergencyContact: ''
+    emergencyContact: '',
+    importantInfo: ''
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [hasChanges, setHasChanges] = useState(false);
@@ -116,6 +120,39 @@ const ProfileForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Carregar instituições quando o componente for montado
+  useEffect(() => {
+    loadInstitutions();
+  }, [loadInstitutions]);
+
+  // Carregar dados do usuário quando userProfile estiver disponível
+  useEffect(() => {
+    if (userProfile && 'cpf' in userProfile) {
+      console.log('📋 Carregando dados do usuário no ProfileForm:', userProfile);
+      setFormData({
+        name: userProfile.name || '',
+        age: userProfile.age?.toString() || '',
+        cpf: userProfile.cpf || '',
+        rg: userProfile.rg || '',
+        address: userProfile.address || '',
+        description: userProfile.description || '',
+        telephone: userProfile.telephone || '',
+        email: userProfile.email || '',
+        document: userProfile.rg || '',
+        organization: userProfile.institution_id || '',
+        location: userProfile.address || '',
+        phone: userProfile.telephone || '',
+        emergencyContact: '',
+        importantInfo: ''
+      });
+    }
+  }, [userProfile]);
+
+  // Função para verificar se um campo deve ser exibido (só exibe se tem dados)
+  const shouldShowField = (fieldValue: string) => {
+    return fieldValue && fieldValue.trim() !== '';
+  };
+
   const handleInputChange = (field: keyof FormData, value: string) => {
     let formattedValue = value;
     
@@ -157,21 +194,7 @@ const ProfileForm: React.FC = () => {
     setErrors({});
   };
 
-  const organizationOptions = [
-    'Casa de Acolhimento São José',
-    'Centro de Referência Especializado',
-    'Fundação Assistência Social',
-    'Instituto Vida Nova',
-    'Projeto Esperança'
-  ];
 
-  const locationOptions = [
-    'Unidade Centro',
-    'Unidade Norte',
-    'Unidade Sul',
-    'Unidade Leste',
-    'Unidade Oeste'
-  ];
 
   return (
     <div className="profile-form-container">
@@ -198,126 +221,123 @@ const ProfileForm: React.FC = () => {
           </div>
           
           <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="name">Nome completo*</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Digite seu nome completo"
-                maxLength={120}
-                autoComplete="name"
-                readOnly={!isEditing}
-                className={errors.name ? 'invalid' : ''}
-              />
-              <p className="help">Como está no documento.</p>
-              {errors.name && <p className="error" role="alert">{errors.name}</p>}
-            </div>
-
-            <div className="field">
-              <label htmlFor="age">Idade</label>
-              <input
-                id="age"
-                name="age"
-                type="number"
-                value={formData.age}
-                onChange={(e) => handleInputChange('age', e.target.value)}
-                placeholder="25"
-                min="0"
-                max="120"
-                inputMode="numeric"
-                readOnly={!isEditing}
-                className={errors.age ? 'invalid' : ''}
-              />
-              <p className="help">Somente números.</p>
-              {errors.age && <p className="error" role="alert">{errors.age}</p>}
-            </div>
-
-            <div className="field">
-              <label htmlFor="cpf">CPF</label>
-              <input
-                id="cpf"
-                name="cpf"
-                type="text"
-                value={formData.cpf}
-                onChange={(e) => handleInputChange('cpf', e.target.value)}
-                placeholder="000.000.000-00"
-                maxLength={14}
-                inputMode="numeric"
-                readOnly={!isEditing}
-                className={errors.cpf ? 'invalid' : ''}
-              />
-              <p className="help">Formato 000.000.000-00.</p>
-              {errors.cpf && <p className="error" role="alert">{errors.cpf}</p>}
-            </div>
-
-            <div className="field">
-              <label htmlFor="document">Documento de identificação (opcional)</label>
-              <input
-                id="document"
-                name="document"
-                type="text"
-                value={formData.document}
-                onChange={(e) => handleInputChange('document', e.target.value)}
-                placeholder="RG, CNH ou outro"
-                maxLength={30}
-                readOnly={!isEditing}
-              />
-              <p className="help">RG, CNH ou outro.</p>
-            </div>
-
-            <div className="field">
-              <label htmlFor="organization">Organização de apoio</label>
-              <select
-                id="organization"
-                name="organization"
-                value={formData.organization}
-                onChange={(e) => handleInputChange('organization', e.target.value)}
-                disabled={!isEditing}
-              >
-                <option value="">Selecione…</option>
-                {organizationOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              <p className="help">Selecione a instituição que lhe acompanha.</p>
-            </div>
-
-            <div className="field">
-              <label htmlFor="location">Local de atendimento</label>
-              <select
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                disabled={!isEditing}
-              >
-                <option value="">Selecione…</option>
-                {locationOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-              <p className="help">Ex.: Unidade Centro.</p>
-            </div>
-
-            <div className="field">
-              <label htmlFor="description">Conte um pouco sobre você</label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Você decide o que compartilhar"
-                maxLength={500}
-                readOnly={!isEditing}
-              />
-              <div className="textarea-footer">
-                <p className="help">Você decide o que compartilhar (opcional).</p>
-                <span className="char-counter">{formData.description.length}/500</span>
+            {shouldShowField(formData.name) && (
+              <div className="field">
+                <label htmlFor="name">Nome completo*</label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  placeholder="Digite seu nome completo"
+                  maxLength={120}
+                  autoComplete="name"
+                  readOnly={!isEditing}
+                  className={errors.name ? 'invalid' : ''}
+                />
+                <p className="help">Como está no documento.</p>
+                {errors.name && <p className="error" role="alert">{errors.name}</p>}
               </div>
-            </div>
+            )}
+
+            {shouldShowField(formData.age) && (
+              <div className="field">
+                <label htmlFor="age">Idade</label>
+                <input
+                  id="age"
+                  name="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={(e) => handleInputChange('age', e.target.value)}
+                  placeholder="25"
+                  min="0"
+                  max="120"
+                  inputMode="numeric"
+                  readOnly={!isEditing}
+                  className={errors.age ? 'invalid' : ''}
+                />
+                <p className="help">Somente números.</p>
+                {errors.age && <p className="error" role="alert">{errors.age}</p>}
+              </div>
+            )}
+
+            {shouldShowField(formData.cpf) && (
+              <div className="field">
+                <label htmlFor="cpf">CPF</label>
+                <input
+                  id="cpf"
+                  name="cpf"
+                  type="text"
+                  value={formData.cpf}
+                  onChange={(e) => handleInputChange('cpf', e.target.value)}
+                  placeholder="000.000.000-00"
+                  maxLength={14}
+                  inputMode="numeric"
+                  readOnly={!isEditing}
+                  className={errors.cpf ? 'invalid' : ''}
+                />
+                <p className="help">Formato 000.000.000-00.</p>
+                {errors.cpf && <p className="error" role="alert">{errors.cpf}</p>}
+              </div>
+            )}
+
+            {shouldShowField(formData.document) && (
+              <div className="field">
+                <label htmlFor="document">Documento de identificação (opcional)</label>
+                <input
+                  id="document"
+                  name="document"
+                  type="text"
+                  value={formData.document}
+                  onChange={(e) => handleInputChange('document', e.target.value)}
+                  placeholder="RG, CNH ou outro"
+                  maxLength={30}
+                  readOnly={!isEditing}
+                />
+                <p className="help">RG, CNH ou outro.</p>
+              </div>
+            )}
+
+            {shouldShowField(formData.organization) && (
+              <div className="field">
+                <label htmlFor="organization">Organização de apoio</label>
+                <select
+                  id="organization"
+                  name="organization"
+                  value={formData.organization}
+                  onChange={(e) => handleInputChange('organization', e.target.value)}
+                  disabled={!isEditing}
+                >
+                  <option value="">Selecione uma instituição</option>
+                  {institutions.map(institution => (
+                    <option key={institution.id} value={institution.id}>
+                      {institution.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="help">Selecione a instituição que lhe acompanha.</p>
+              </div>
+            )}
+
+            {shouldShowField(formData.description) && (
+              <div className="field">
+                <label htmlFor="description">Conte um pouco sobre você</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  placeholder="Você decide o que compartilhar"
+                  maxLength={500}
+                  readOnly={!isEditing}
+                />
+                <div className="textarea-footer">
+                  <p className="help">Você decide o que compartilhar (opcional).</p>
+                  <span className="char-counter">{formData.description.length}/500</span>
+                </div>
+              </div>
+            )}
           </form>
         </div>
 
@@ -328,64 +348,74 @@ const ProfileForm: React.FC = () => {
           </div>
           
           <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="phone">Telefone para contato</label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="(11) 9 9999-9999"
-                inputMode="tel"
-                autoComplete="tel"
-                readOnly={!isEditing}
-              />
-              <p className="help">Usado para retornos e avisos.</p>
-            </div>
+            {shouldShowField(formData.phone) && (
+              <div className="field">
+                <label htmlFor="phone">Telefone para contato</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  placeholder="(11) 9 9999-9999"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  readOnly={!isEditing}
+                />
+                <p className="help">Usado para retornos e avisos.</p>
+              </div>
+            )}
 
-            <div className="field">
-              <label htmlFor="emergencyContact">Contato de emergência</label>
-              <input
-                id="emergencyContact"
-                name="emergencyContact"
-                type="tel"
-                value={formData.emergencyContact}
-                onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
-                placeholder="(11) 9 9999-9999"
-                inputMode="tel"
-                readOnly={!isEditing}
-              />
-              <p className="help">Para recados urgentes.</p>
-            </div>
+            {shouldShowField(formData.emergencyContact) && (
+              <div className="field">
+                <label htmlFor="emergencyContact">Contato de emergência</label>
+                <input
+                  id="emergencyContact"
+                  name="emergencyContact"
+                  type="tel"
+                  value={formData.emergencyContact}
+                  onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
+                  placeholder="(11) 9 9999-9999"
+                  inputMode="tel"
+                  readOnly={!isEditing}
+                />
+                <p className="help">Para recados urgentes.</p>
+              </div>
+            )}
 
-            <div className="field">
-              <label htmlFor="email">E-mail</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="seu@email.com"
-                autoComplete="email"
-                readOnly={!isEditing}
-                className={errors.email ? 'invalid' : ''}
-              />
-              <p className="help">Para receber atualizações (opcional).</p>
-              {errors.email && <p className="error" role="alert">{errors.email}</p>}
-            </div>
+            {shouldShowField(formData.email) && (
+              <div className="field">
+                <label htmlFor="email">E-mail</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  placeholder="seu@email.com"
+                  autoComplete="email"
+                  readOnly={!isEditing}
+                  className={errors.email ? 'invalid' : ''}
+                />
+                <p className="help">Para receber atualizações (opcional).</p>
+                {errors.email && <p className="error" role="alert">{errors.email}</p>}
+              </div>
+            )}
 
-            <div className="field">
-              <label htmlFor="importantInfo">Informação importante para o atendimento</label>
-              <textarea
-                id="importantInfo"
-                name="importantInfo"
-                placeholder="Alergias, restrições, preferências"
-                readOnly={!isEditing}
-              />
-              <p className="help">Alergias, restrições, preferências (opcional).</p>
-            </div>
+            {shouldShowField(formData.importantInfo) && (
+              <div className="field">
+                <label htmlFor="importantInfo">Informação importante para o atendimento</label>
+                <textarea
+                  id="importantInfo"
+                  name="importantInfo"
+                  value={formData.importantInfo}
+                  onChange={(e) => handleInputChange('importantInfo', e.target.value)}
+                  placeholder="Alergias, restrições, preferências"
+                  readOnly={!isEditing}
+                />
+                <p className="help">Alergias, restrições, preferências (opcional).</p>
+              </div>
+            )}
 
             {isEditing && (
               <div className="form-actions">

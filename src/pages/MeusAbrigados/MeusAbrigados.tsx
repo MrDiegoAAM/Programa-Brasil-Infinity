@@ -5,6 +5,8 @@ import Footer from "../../components/Footer/Footer";
 import AnimatedPage from "../../components/AnimatedPage";
 import ResetPage from "../../components/AboutTeam/ResetPage";
 import { toast } from "react-toastify";
+import PrintButton from '../../components/PrintButton';
+import { usePrintToPDF } from '../../hooks/usePrintToPDF';
 import { Container, AbrigadoCard, AbrigadosList, Title, EmptyState, ActionButtons, EditButton, DeleteButton, EditForm, FormGroup, SaveButton, CancelButton } from "./styles";
 
 interface IAbrigado {
@@ -34,6 +36,7 @@ export default function MeusAbrigados() {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<IAbrigado>>({});
+  const { printToPDF } = usePrintToPDF();
 
   // Determinar se é instituição
   const isInstitution = userProfile && 'cnpj' in userProfile;
@@ -148,6 +151,15 @@ export default function MeusAbrigados() {
       <AnimatedPage>
         <Container>
           <Title>Meus Abrigados</Title>
+          
+          <PrintButton 
+            onPrint={() => printToPDF({ 
+              title: 'Relatório de Abrigados da Instituição',
+              filename: 'meus-abrigados.pdf',
+              excludeSelectors: ['.print-button', 'header', 'footer', '.edit-button', '.save-button', '.cancel-button']
+            })}
+            disabled={loading || abrigados.length === 0}
+          />
           
           {loading ? (
             <EmptyState>Carregando...</EmptyState>
