@@ -206,33 +206,6 @@ O sistema atende pessoas que frequentam:
 - [x] **Proteção contra CORS**
 - [x] **Sanitização de dados** de entrada
 
-
-## 🎨 Layout
-
-O layout da aplicação está disponível no Figma:
-
-<a href="">
-  <img alt="Made by patrickcordeiro" src="https://img.shields.io/badge/Acessar%20Layout%20-Figma-%2304D361">
-</a>
-
-### Mobile
-
-<p align="center">
-  <img alt="NuKenzie" title="#NuKenzie" src="./public/img/mobile-homepage.jpg" width="200px">
-
-  <img alt="NuKenzie" title="#NuKenzie" src="./public/img/mobile-detalhes.jpg" width="200px">
-</p>
-
-### Web
-
-<p align="center" style="display: flex; align-items: flex-start; justify-content: center;">
-  <img alt="NuKenzie" title="#NuKenzie" src="./public/img/web-homepage.png" width="400px">
-
-  <img alt="NuKenzie" title="#NuKenzie" src="./public/img/web-dashboard-start.png" width="400px">
-  
-  <img alt="NuKenzie" title="#NuKenzie" src="./public/img/web-dashboard-lancamentos.png" width="400px">
-</p>
-
 ## 🛠 **Tecnologias Utilizadas**
 
 ### **Frontend**
@@ -273,23 +246,6 @@ O layout da aplicação está disponível no Figma:
 - 🧪 **Supabase CLI** - Desenvolvimento local
 - 🔍 **TypeScript** - Tipagem estática
 
-## 🧪 **Credenciais de Teste**
-
-Para facilitar os testes do sistema, utilize as seguintes credenciais:
-
-### 🏢 **Instituições de Teste**
-
-| Instituição | Email | Senha | CNPJ | Descrição |
-|-------------|-------|-------|------|----------|
-| **Casa de Apoio Esperança** | casa.esperanca@teste.com | 123456 | 12.345.678/0001-90 | ONG especializada em acolhimento |
-| **Instituto Vida Nova** | instituto.vidanova@teste.com | 123456 | 98.765.432/0001-10 | Centro de capacitação profissional |
-
-### 🤝 **Pessoas Carentes de Teste**
-
-| Nome | Email | Senha | CPF | Idade | Situação |
-|------|-------|-------|-----|-------|----------|
-| **João Silva** | joao.silva@teste.com | 123456 | 123.456.789-01 | 35 | Com login próprio |
-| **Maria Santos** | maria.santos@teste.com | 123456 | 987.654.321-09 | 28 | Com login próprio |
 
 ### 📝 **Como Testar**
 
