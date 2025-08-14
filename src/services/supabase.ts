@@ -3,7 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL!;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY!;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Configuração do cliente Supabase com persistência controlada
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    storageKey: 'supabase.auth.token',
+    storage: window.localStorage,
+    autoRefreshToken: true,
+    detectSessionInUrl: false // Evita auto-login via URL
+  }
+});
 
 // URLs das Edge Functions
 export const FUNCTIONS_URL = process.env.REACT_APP_FUNCTIONS_URL!;

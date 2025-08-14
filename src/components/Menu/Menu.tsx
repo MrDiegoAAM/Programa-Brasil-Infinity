@@ -17,11 +17,13 @@ import { Link } from "react-router-dom";
 import { IoIosPeople } from "react-icons/io";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useAuth } from "../../contexts/authContext/SupabaseAuthContext";
 import { CgProfile } from "react-icons/cg";
 import ResetPage from "../AboutTeam/ResetPage";
 
 export default function Menu() {
-  const { isLogin, setIsModal, logout, user } = useContext(AuthContext);
+  const { isLogin, setIsModal, user } = useContext(AuthContext);
+  const { signOut } = useAuth();
   const handleOutSideClick = (e: any) => {
     if (e.target.id === "modalMenu") {
       setIsModal(false);
@@ -104,7 +106,7 @@ export default function Menu() {
           
           {/* Botão Login/Logout no final */}
           {isLogin ? (
-            <Link to="/home" replace onClick={logout}>
+            <Link to="/home" replace onClick={signOut}>
               <BiLogOut />
               Logout
             </Link>

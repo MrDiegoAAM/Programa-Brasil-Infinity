@@ -35,10 +35,12 @@ export const SupabaseAuthProvider: React.FC<AuthProviderProps> = ({ children }) 
   useEffect(() => {
     // Verificar sessão atual
     const getSession = async () => {
+      console.log('🔍 Verificando sessão atual do Supabase...');
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
-        console.error('Erro ao obter sessão:', error);
+        console.error('❌ Erro ao obter sessão:', error);
       } else {
+        console.log('📋 Sessão encontrada:', session ? 'Ativa' : 'Nenhuma');
         setSession(session);
         setUser(session?.user ?? null);
       }
@@ -50,7 +52,7 @@ export const SupabaseAuthProvider: React.FC<AuthProviderProps> = ({ children }) 
     // Escutar mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session);
+        console.log('🔄 Auth state changed:', event, session ? 'Sessão ativa' : 'Sem sessão');
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -113,15 +115,28 @@ export const SupabaseAuthProvider: React.FC<AuthProviderProps> = ({ children }) 
 
   const signOut = async () => {
     try {
+      console.log('🚪 Iniciando logout do Supabase...');
       setLoading(true);
+      
+      // Limpar localStorage antes do signOut
+      localStorage.removeItem('supabase.auth.token');
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
+        console.error('❌ Erro no signOut do Supabase:', error);
         throw error;
       }
+      
+      console.log('✅ Logout do Supabase realizado com sucesso');
       toast.success('Logout realizado com sucesso!');
     } catch (error: any) {
-      console.error('Erro no logout:', error);
+      console.error('❌ Erro no logout:', error);
       toast.error(error.message || 'Erro ao fazer logout');
+      
+      // Forçar limpeza mesmo com erro
+      setSession(null);
+      setUser(null);
+      localStorage.clear();
     } finally {
       setLoading(false);
     }

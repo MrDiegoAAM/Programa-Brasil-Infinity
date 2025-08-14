@@ -78,7 +78,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
   const [token, setToken] = useState<string | null>(null);
   
   // Integração com SupabaseAuthContext
-  const { user: supabaseUser, session } = useAuth();
+  const { user: supabaseUser, session, signOut: supabaseSignOut } = useAuth();
   const { userProfile, homeless: supabaseHomeless, loadHomeless } = useData();
 
   // Sincronizar estado de autenticação do Supabase com AuthContext tradicional
@@ -111,14 +111,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
       
     } else if (!supabaseUser) {
       console.log("❌ Usuário não logado no Supabase, limpando AuthContext tradicional...");
-      setIsLogin(false);
-      setUser({});
-      setIsInstitution(false);
-      setIsAbrigado(false);
-      setToken(null);
-      setHomeLess([]);
-      localStorage.removeItem("@TOKEN");
-      localStorage.removeItem("@type");
+      clearAuthData();
     }
   }, [supabaseUser, userProfile, session]);
 
@@ -149,18 +142,18 @@ export default function AuthProvider({ children }: IChildrenProps) {
     }
   }, [supabaseHomeless]);
 
-  const logout = () => {
-    toast.success("Logout realizado com sucesso!", {
-      autoClose: 1500,
-      toastId: customId,
-    });
-    
-    setTimeout(() => {
+  const logout = async () => {
+    try {
+      // Usar o signOut do Supabase em vez da lógica antiga
+      await supabaseSignOut();
+      
+      // Limpar dados do AuthContext tradicional
       localStorage.clear();
       setIsLogin(false);
       setIsAbrigado(false);
       setIsInstitution(false);
       setToken(null);
+      setHomeLess([]);
       setUser({
         id: "",
         name: "",
@@ -176,19 +169,34 @@ export default function AuthProvider({ children }: IChildrenProps) {
       });
       delete api.defaults.headers.common.Authorization;
       navigate("/home", { replace: true });
-    }, 2000);
+    } catch (error) {
+      console.error('Erro no logout:', error);
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const clearAuthData = () => {
-    console.log("Limpando dados de autenticação...");
+    console.log("🧹 Limpando dados de autenticação...");
     localStorage.clear();
     setIsLogin(false);
     setToken(null);
     setIsAbrigado(false);
     setIsInstitution(false);
-    setUser({});
+    setHomeLess([]);
+    setUser({
+      id: "",
+      name: "",
+      email: "",
+      telephone: "",
+      address: "",
+      cnpj: "",
+      age: "",
+      cpf: "",
+      picture: "",
+      search(): void {},
+      logout(): void {}
+    });
     delete api.defaults.headers.common.Authorization;
   };
 
