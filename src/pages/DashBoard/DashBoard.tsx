@@ -1,18 +1,16 @@
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext } from "react";
 
 import Header from "../../components/Header/Header";
 import { Container } from "./style";
-import api from "../../server/api";
 import Footer from "../../components/Footer/Footer";
 import AnimatedPage from "../../components/AnimatedPage";
 import ResetPage from "../../components/AboutTeam/ResetPage";
 import { toast } from "react-toastify";
 import CardUsuario from "../../components/CardUsuario/CardUsuario";
 import { IRegisterPerson as IRegisterInstitution } from "../../components/ModalRegister/ModalRegister";
-import { AuthContext } from "../../contexts/authContext/AuthContext";
+import { useData } from "../../contexts/authContext/DataContext";
 import PrintButton from "../../components/PrintButton";
 import { usePrintToPDF } from "../../hooks/usePrintToPDF";
 
@@ -41,9 +39,12 @@ export interface IRegisterPerson {
 }
 
 export default function DashBoard() {
-  const userId = Number(localStorage.getItem("@userId"));
-  const { isAbrigado, isInstitution } = useContext(AuthContext);
+  const { userProfile, createHomeless } = useData();
   const { printToPDF } = usePrintToPDF();
+  
+  // Determinar tipo de usuário baseado no perfil
+  const isInstitution = userProfile && 'cnpj' in userProfile;
+  const isAbrigado = userProfile && 'cpf' in userProfile;
 
   const schema = yup.object().shape({
     name: yup.string().required("Campo obrigatório"),
@@ -66,17 +67,27 @@ export default function DashBoard() {
   });
 
   const onSubmit = async (data: IRegisterPerson) => {
-    const dataToSend = {
-      ...data,
-      userId: userId,
-    };
-
     try {
-      const response = await api.post("/homeless", dataToSend);
-      if (response.status === 201) {
-        toast.success("Abrigado cadastrado com sucesso!");
-        reset();
+      if (!userProfile || !isInstitution) {
+        toast.error("Erro: Usuário não é uma instituição válida.");
+        return;
       }
+
+      await createHomeless({
+        name: data.name,
+        age: data.age,
+        cpf: data.cpf,
+        telephone: data.telephone,
+        address: data.address,
+        picture: data.picture,
+        description: data.description || '',
+        institution_id: userProfile.id,
+        registered_by: userProfile.id,
+        has_login: false
+      });
+
+      toast.success("Abrigado cadastrado com sucesso!");
+      reset();
     } catch (error) {
       console.error("Erro ao cadastrar abrigado:", error);
       toast.error("Erro ao cadastrar abrigado. Tente novamente.");
