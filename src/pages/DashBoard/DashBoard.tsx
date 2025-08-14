@@ -27,6 +27,9 @@ export interface IRegisterPerson {
   id?: number;
   name: string;
   age: number;
+  cpf: string;
+  telephone: string;
+  address: string;
   description?: string;
   institution: string;
   date?: string;
