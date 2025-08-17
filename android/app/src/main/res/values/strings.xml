@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Programa Brasil Infinity</string>
+    <string name="title_activity_main">Programa Brasil Infinity</string>
+    <string name="package_name">com.infinityschool.programa.brasil</string>
+    <string name="custom_url_scheme">com.infinityschool.programa.brasil</string>
+</resources>
