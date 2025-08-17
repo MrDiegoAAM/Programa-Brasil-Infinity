@@ -26,9 +26,9 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "cap:add:android": "npx cap add android",
     "cap:sync": "npx cap sync",
@@ -54,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@types/styled-components": "^5.1.26"
   }
 }

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import PrintButton from '../../components/PrintButton';
 import { usePrintToPDF } from '../../hooks/usePrintToPDF';
 import { Container, AbrigadoCard, AbrigadosList, Title, EmptyState, ActionButtons, EditButton, DeleteButton, EditForm, FormGroup, SaveButton, CancelButton } from "./styles";
+import { supabase } from '../../services/supabase';
 
 interface IAbrigado {
   id: string;
@@ -109,7 +110,6 @@ export default function MeusAbrigados() {
 
     try {
       // Usar Supabase para deletar
-      const { supabase } = await import('../../services/supabase');
       const { error } = await supabase
         .from('homeless')
         .delete()
