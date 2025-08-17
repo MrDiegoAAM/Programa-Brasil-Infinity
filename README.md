@@ -12,6 +12,37 @@ Para teste utilize:
 
 senha: 123456
 
+## 📱 **Aplicativo Móvel (APK)**
+
+### 📲 **Instalação do APK**
+
+O aplicativo móvel está disponível para instalação direta no Android. Escaneie o QR Code abaixo ou baixe o APK diretamente:
+
+<div align="center">
+    <img alt="QR Code APK" title="Baixar APK" src="./src/APKQRCODE.png" width="200px"/>
+    <p><strong>📱 Escaneie o QR Code para baixar o APK</strong></p>
+</div>
+
+### 🔧 **Como Instalar o APK**
+
+1. **📱 Baixe o APK** escaneando o QR Code acima
+2. **⚙️ Habilite "Fontes Desconhecidas"** nas configurações do Android:
+   - Vá em **Configurações** > **Segurança** > **Fontes Desconhecidas**
+   - Ou **Configurações** > **Aplicativos** > **Acesso Especial** > **Instalar apps desconhecidos**
+3. **📂 Abra o arquivo APK** baixado
+4. **✅ Confirme a instalação** quando solicitado
+5. **🚀 Abra o aplicativo** e comece a usar!
+
+### 📋 **Requisitos do Sistema**
+- **Android 7.0** (API level 24) ou superior
+- **50 MB** de espaço livre
+- **Conexão com internet** para sincronização de dados
+
+### ⚠️ **Importante**
+- O APK é seguro e foi compilado diretamente do código fonte
+- Todas as funcionalidades da versão web estão disponíveis no app
+- Os dados são sincronizados em tempo real com a plataforma web
+
 ## 💻 Sobre o projeto
 
 Programa Brasil Infinity
