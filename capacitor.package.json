@@ -1,0 +1,16 @@
+{
+  "name": "programa-brasil-infinity-mobile",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd \"Projeto - Cadastro Pessoas Carentes GoV\" && npm run build",
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync",
+    "cap:build:android": "npm run build && npx cap sync && npx cap build android",
+    "cap:open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2"
+  }
+}
