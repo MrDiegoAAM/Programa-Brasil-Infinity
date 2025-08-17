@@ -9,7 +9,7 @@ import AnimatedPage from "../../components/AnimatedPage";
 import ResetPage from "../../components/AboutTeam/ResetPage";
 import { toast } from "react-toastify";
 import CardUsuario from "../../components/CardUsuario/CardUsuario";
-import { IRegisterPerson } from "../../components/ModalRegister/ModalRegister";
+// import { IRegisterPerson } from "../../components/ModalRegister/ModalRegister"; // Removido - conflito com declaração local
 import { useData } from "../../contexts/authContext/DataContext";
 import PrintButton from "../../components/PrintButton";
 import { usePrintToPDF } from "../../hooks/usePrintToPDF";

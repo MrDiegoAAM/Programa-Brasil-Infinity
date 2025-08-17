@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState, useEffect } from "react";
+import { ReactNode, createContext, useState, useEffect, useCallback } from "react";
 import { IRegisterPerson } from "../../pages/DashBoard/DashBoard";
 import api from "../../server/api";
 import { toast } from "react-toastify";
@@ -200,7 +200,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
     delete api.defaults.headers.common.Authorization;
   };
 
-  const loadUserProfile = () => {
+  const loadUserProfile = useCallback(() => {
     console.log("🔄 loadUserProfile chamado");
     const storedToken = localStorage.getItem("@TOKEN");
     const type = localStorage.getItem("@type");
@@ -228,7 +228,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
     } else {
       console.log("⚠️ Token ou tipo não encontrado no localStorage");
     }
-  };
+  }, [loadHomeless]);
 
   // Inicialização do token e autenticação
   useEffect(() => {
