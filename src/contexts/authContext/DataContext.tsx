@@ -64,7 +64,7 @@ interface DataProviderProps {
 }
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const { user, session } = useAuth();
+  const { user } = useAuth();
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [homeless, setHomeless] = useState<Homeless[]>([]);
   const [userProfile, setUserProfile] = useState<Institution | Homeless | null>(null);

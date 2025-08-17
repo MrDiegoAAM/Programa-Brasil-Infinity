@@ -3,19 +3,19 @@ import { IRegisterPerson } from "../../pages/DashBoard/DashBoard";
 import api from "../../server/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken"; // Removido - não utilizado
 import { useAuth } from "./SupabaseAuthContext";
 import { useData } from "./DataContext";
 
-interface IHomelessProps {
-  img: string;
-  name: string;
-  CPF: number;
-  age: number;
-  state: string;
-  lastLocation: string;
-  contact: number;
-}
+// interface IHomelessProps {
+//   img: string;
+//   name: string;
+//   CPF: number;
+//   age: number;
+//   state: string;
+//   lastLocation: string;
+//   contact: number;
+// } // Removido - não utilizado
 
 interface IUser {
   name: string;
@@ -58,7 +58,7 @@ interface IChildrenProps {
   children: ReactNode;
 }
 
-const customId = "custom-id-yes";
+// const customId = "custom-id-yes"; // Removido - não utilizado
 
 export const AuthContext = createContext<IUserConstext>({} as IUserConstext);
 
@@ -250,7 +250,7 @@ export default function AuthProvider({ children }: IChildrenProps) {
       setIsInstitution(false);
       setUser({});
     }
-  }, []); // Executar apenas uma vez na inicialização
+  }, [loadUserProfile]); // Adicionar dependência loadUserProfile
 
   function next() {
     api

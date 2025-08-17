@@ -10,7 +10,7 @@ export const usePrintToPDF = () => {
   const printToPDF = useCallback((options: PrintOptions = {}) => {
     const {
       title = 'Relatório',
-      filename = 'relatorio.pdf',
+      // filename = 'relatorio.pdf', // Removido - não utilizado
       excludeSelectors = []
     } = options;
 
