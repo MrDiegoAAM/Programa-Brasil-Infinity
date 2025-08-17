@@ -14,10 +14,14 @@ serve(async (req) => {
 
   try {
     console.log('🔧 Testando conexão com Supabase...')
-    const supabaseUrl = 'https://aadeajsyatbnkwasiqyj.supabase.co'
-    const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhZGVhanN5YXRibmt3YXNpcXlqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDk1NTgwMiwiZXhwIjoyMDcwNTMxODAyfQ.FRWSbNskDkMn_DiBTAdxrMeTjJI5jR-PwuW7txcdWCw'
-    
-    const supabaseClient = createClient(supabaseUrl, supabaseServiceKey)
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
+}
+
+const supabaseClient = createClient(supabaseUrl, supabaseServiceKey)
 
     // Testar busca de instituições
     console.log('🏥 Buscando todas as instituições...')
