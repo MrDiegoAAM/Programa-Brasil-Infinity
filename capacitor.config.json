@@ -1,7 +1,7 @@
 {
   "appId": "com.infinityschool.programa.brasil",
   "appName": "Programa Brasil Infinity",
-  "webDir": "Projeto - Cadastro Pessoas Carentes GoV/build",
+  "webDir": "build",
   "server": {
     "androidScheme": "https"
   }
