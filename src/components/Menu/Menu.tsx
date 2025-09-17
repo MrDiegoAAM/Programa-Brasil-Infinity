@@ -94,7 +94,7 @@ export default function Menu() {
             Projetos
           </Link>
           {!user.isAbrigado && (
-            <Link to="/pesquisapessoas" replace>
+            <Link to="/programadoacolhimentogov" replace>
               <BiSearchAlt />
               Pesquisar
             </Link>
