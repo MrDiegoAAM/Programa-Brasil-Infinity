@@ -27,9 +27,9 @@ export default function RouteMain() {
           <Route path="/meusabrigados" element={<MeusAbrigados />} />
         </Route>
         <Route element={<PrivateRoutes/>}>
-          <Route path="/profile" element={<DashBoard />} />
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/usuario" element={<Profile />} />
         </Route>
         <Route path="*" element={<Navigate replace to="/home" />} />
       </Routes>
