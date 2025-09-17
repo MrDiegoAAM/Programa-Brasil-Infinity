@@ -75,7 +75,7 @@ export default function Menu() {
         <div>
           {/* Botão Perfil aparece primeiro quando logado */}
           {isLogin && (
-            <Link to="/profile" replace>
+            <Link to="/usuario" replace>
               <CgProfile />
               Perfil
             </Link>

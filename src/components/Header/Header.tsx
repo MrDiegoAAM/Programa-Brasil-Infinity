@@ -69,7 +69,7 @@ export default function Header() {
                   <InstitutionName>{userProfile?.name || 'Usuário'}</InstitutionName>
                 </InstitutionInfo>
               )}
-              <Link to="/profile">
+              <Link to="/usuario">
                 <CgProfile />
                 Perfil
               </Link>

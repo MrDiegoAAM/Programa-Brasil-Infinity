@@ -50,7 +50,7 @@ export default function Home() {
                 </p>
                 <BtnSupport
                   onClick={() =>
-                    isLogin ? navigate("/profile") : navigate("/login")
+                    isLogin ? navigate("/usuario") : navigate("/login")
                   }
                 >
                   Apoiar
@@ -75,7 +75,7 @@ export default function Home() {
 
             <CartInstitution
               onClick={() =>
-                isLogin ? navigate("/profile") : navigate("/login")
+                isLogin ? navigate("/usuario") : navigate("/login")
               }
             >
               <NavLink to="/login">
